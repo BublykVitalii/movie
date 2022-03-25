@@ -1,4 +1,6 @@
+import 'package:get_it/get_it.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:movie/config.dart';
 import 'package:movie/movie/domain/movie.dart';
 
 part 'movie_dto.g.dart';
@@ -15,13 +17,7 @@ class MoviesDTO {
   factory MoviesDTO.fromJson(Map<String, dynamic> json) =>
       _$MoviesDTOFromJson(json);
   List<Movie> toMovies() {
-    return results
-        .map((movie) => Movie(
-              id: movie.id,
-              posterPath: movie.posterPath,
-              title: movie.title,
-            ))
-        .toList();
+    return results.map((movie) => movie.toMovie()).toList();
   }
 }
 
@@ -38,10 +34,16 @@ class MovieDTO {
     this.id,
   );
 
+  final _appConfig = GetIt.instance.get<AppConfig>();
+
   factory MovieDTO.fromJson(Map<String, dynamic> json) =>
       _$MovieDTOFromJson(json);
 
   Movie toMovie() {
-    return Movie(id: id, posterPath: posterPath, title: title);
+    return Movie(
+      id: id,
+      posterPath: _appConfig.posterUrl + posterPath,
+      title: title,
+    );
   }
 }

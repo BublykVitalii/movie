@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:movie/movie/domain/movie.dart';
+part of 'movie_cubit.dart';
 
 @immutable
 abstract class MovieState {}

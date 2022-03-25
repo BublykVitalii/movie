@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movie/infrastructure/theme/app_colors.dart';
 import 'package:movie/movie/screens/cubit/movie_cubit.dart';
-import 'package:movie/movie/screens/cubit/movie_state.dart';
 
 class MovieScreen extends StatefulWidget {
   static const _routeName = '/movie-screen';
@@ -28,17 +28,15 @@ class _MovieScreenState extends State<MovieScreen> {
   MovieCubit get movieCubit => BlocProvider.of<MovieCubit>(context);
 
   @override
+  void initState() {
+    movieCubit.getNowPlaying(1);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        actions: [
-          IconButton(
-            onPressed: () {
-              movieCubit.getNowPlaying(1);
-            },
-            icon: const Icon(Icons.update),
-          ),
-        ],
         title: const Text('Movie'),
       ),
       body: BlocBuilder<MovieCubit, MovieState>(
@@ -48,23 +46,54 @@ class _MovieScreenState extends State<MovieScreen> {
               child: CircularProgressIndicator(),
             );
           } else if (state is MovieSuccess && state.movies != null) {
-            return ListView.builder(
+            return GridView.builder(
+              padding: const EdgeInsets.all(10),
               itemCount: state.movies!.length,
               itemBuilder: (BuildContext context, int index) {
-                final movie = state.movies?[index];
-                final path = movie?.posterPath;
-                const basePosterUrl = 'http://image.tmdb.org/t/p/w342';
+                final movie = state.movies![index];
 
-                return Column(
-                  children: [
-                    Container(
-                      width: 150,
-                      height: 150,
-                      child: Image.network(basePosterUrl + path!),
+                return Container(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.darkBlue.withOpacity(0.8),
+                      borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(15),
+                        bottomRight: Radius.circular(15),
+                      ),
                     ),
-                  ],
+                    alignment: Alignment.center,
+                    height: 30,
+                    child: Text(
+                      movie.title,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  decoration: BoxDecoration(
+                    boxShadow: const [
+                      BoxShadow(
+                        blurRadius: 3,
+                        color: AppColors.darkBlue,
+                      ),
+                    ],
+                    borderRadius: BorderRadius.circular(15),
+                    image: DecorationImage(
+                      image: NetworkImage(movie.posterPath),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 );
               },
+              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                maxCrossAxisExtent: 300,
+                mainAxisSpacing: 10,
+                crossAxisSpacing: 10,
+                childAspectRatio: 2 / 3,
+              ),
             );
           } else if (state is MovieError) {
             return const Center();

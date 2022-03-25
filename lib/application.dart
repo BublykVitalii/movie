@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-
+import 'package:movie/infrastructure/theme/app_colors.dart';
+import 'package:movie/infrastructure/theme/theme_extensions.dart';
 import 'movie/screens/movie_screen.dart';
 
 class MyApp extends StatefulWidget {
@@ -12,13 +13,15 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
+    final theme = ThemeData(
+      colorScheme: context.theme.colorScheme.copyWith(
+        primary: AppColors.darkBlue,
+      ),
+    );
+
     return MaterialApp(
       onGenerateRoute: onGenerateRoute,
-      theme: ThemeData(
-        appBarTheme: const AppBarTheme(
-          color: Color.fromRGBO(5, 38, 64, 1),
-        ),
-      ),
+      theme: theme,
     );
   }
 
