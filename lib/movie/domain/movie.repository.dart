@@ -1,5 +1,5 @@
 import 'movie.dart';
 
 abstract class MovieRepository {
-  Future<Movie> getMovieNowPlaying();
+  Future<List<Movie>> getNowPlaying();
 }

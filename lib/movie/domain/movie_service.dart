@@ -9,11 +9,11 @@ class MovieService {
 
   final MovieRepository _movieRepository;
 
-  Movie? _movie;
-  Movie? get movie => _movie;
+  List<Movie>? _movies;
+  List<Movie>? get movie => _movies;
 
-  Future<Movie?> getMovieNowPlaying() async {
-    _movie = await _movieRepository.getMovieNowPlaying();
-    return _movie;
+  Future<List<Movie>?> getNowPlaying() async {
+    _movies = await _movieRepository.getNowPlaying();
+    return _movies;
   }
 }

@@ -6,6 +6,13 @@ part of 'movie_dto.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+MoviesDTO _$MoviesDTOFromJson(Map<String, dynamic> json) => MoviesDTO(
+      page: json['page'] as int,
+      results: (json['results'] as List<dynamic>)
+          .map((e) => MovieDTO.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+
 MovieDTO _$MovieDTOFromJson(Map<String, dynamic> json) => MovieDTO(
       json['title'] as String,
       json['poster_path'] as String,

@@ -6,11 +6,11 @@ class Movie extends Equatable {
   final String posterPath;
   final int id;
 
-  const Movie(
-    this.title,
-    this.posterPath,
-    this.id,
-  );
+  const Movie({
+    required this.title,
+    required this.posterPath,
+    required this.id,
+  });
 
   @override
   List<Object?> get props => [title, posterPath, id];

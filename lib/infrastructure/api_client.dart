@@ -21,7 +21,13 @@ abstract class DioRegisterModule {
   @singleton
   Dio registerClient(AppConfig config) {
     return Dio(
-      BaseOptions(baseUrl: config.baseUrl),
+      BaseOptions(
+        baseUrl: config.baseUrl,
+        queryParameters: {
+          'api_key': config.apiKey,
+          'language': config.language,
+        },
+      ),
     )..transformer = FlutterTransformer();
   }
 }
