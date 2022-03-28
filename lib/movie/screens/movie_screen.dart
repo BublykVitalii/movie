@@ -15,10 +15,8 @@ const _kGridDelegate = SliverGridDelegateWithMaxCrossAxisExtent(
   crossAxisSpacing: 10,
   childAspectRatio: 2 / 3,
 );
-const _kRadiusCircular = Radius.circular(15);
 const double _kHeight = 30;
 const double _kFontSize = 15;
-const double _kBlurRadius = 3;
 const double _kRadius = 15;
 
 class MovieScreen extends StatefulWidget {
@@ -97,7 +95,7 @@ class MovieCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
-        ImageCard(movie: movie),
+        _MovieCard(movie: movie),
         Positioned.fill(
           child: Material(
             color: Colors.transparent,
@@ -116,8 +114,41 @@ class MovieCard extends StatelessWidget {
   }
 }
 
-class ImageCard extends StatelessWidget {
-  const ImageCard({
+class _MovieCard extends StatelessWidget {
+  const _MovieCard({
+    Key? key,
+    required this.movie,
+  }) : super(key: key);
+
+  final Movie movie;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      clipBehavior: Clip.antiAlias,
+      elevation: 2,
+      shadowColor: AppColors.darkBlue,
+      borderRadius: BorderRadius.circular(_kRadius),
+      child: InkWell(
+        onTap: () {},
+        child: Ink.image(
+          image: NetworkImage(movie.posterPath),
+          fit: BoxFit.cover,
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: Ink(
+              color: AppColors.darkBlue.withOpacity(0.8),
+              child: _TitleTile(movie: movie),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _TitleTile extends StatelessWidget {
+  const _TitleTile({
     Key? key,
     required this.movie,
   }) : super(key: key);
@@ -127,37 +158,14 @@ class ImageCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      alignment: Alignment.bottomCenter,
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppColors.darkBlue.withOpacity(0.8),
-          borderRadius: const BorderRadius.only(
-            bottomLeft: _kRadiusCircular,
-            bottomRight: _kRadiusCircular,
-          ),
-        ),
-        alignment: Alignment.center,
-        height: _kHeight,
-        child: Text(
-          movie.title,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: _kFontSize,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-      decoration: BoxDecoration(
-        boxShadow: const [
-          BoxShadow(
-            blurRadius: _kBlurRadius,
-            color: AppColors.orange,
-          ),
-        ],
-        borderRadius: BorderRadius.circular(_kRadius),
-        image: DecorationImage(
-          image: NetworkImage(movie.posterPath),
-          fit: BoxFit.cover,
+      alignment: Alignment.center,
+      height: _kHeight,
+      child: Text(
+        movie.title,
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: _kFontSize,
+          fontWeight: FontWeight.bold,
         ),
       ),
     );
