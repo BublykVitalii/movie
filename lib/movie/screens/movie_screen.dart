@@ -4,7 +4,7 @@ import 'package:movie/infrastructure/theme/app_colors.dart';
 import 'package:movie/movie/domain/movie.dart';
 import 'package:movie/movie/domain/movie_service.dart';
 import 'package:movie/movie/screens/cubit/movie_cubit.dart';
-import 'package:movie/movie/screens/drawer_menu_widget.dart';
+import 'package:movie/ui_kit%20/drawer_menu.dart';
 
 // ---Texts---
 const _kTitle = 'Movie';
