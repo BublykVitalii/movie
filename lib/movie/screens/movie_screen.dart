@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movie/infrastructure/theme/app_colors.dart';
 import 'package:movie/movie/domain/movie.dart';
+import 'package:movie/movie/domain/movie_service.dart';
 import 'package:movie/movie/screens/cubit/movie_cubit.dart';
+import 'package:movie/movie/screens/drawer_menu_widget.dart';
 
 // ---Texts---
 const _kTitle = 'Movie';
@@ -41,6 +43,7 @@ class MovieScreen extends StatefulWidget {
 }
 
 class _MovieScreenState extends State<MovieScreen> {
+  late final MovieService movie;
   MovieCubit get movieCubit => BlocProvider.of<MovieCubit>(context);
 
   @override
@@ -52,6 +55,7 @@ class _MovieScreenState extends State<MovieScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: const DrawerMenu(),
       appBar: AppBar(
         title: const Text(_kTitle),
       ),
