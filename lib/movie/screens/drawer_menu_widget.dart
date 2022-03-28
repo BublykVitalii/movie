@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movie/infrastructure/theme/app_colors.dart';
 
 class DrawerMenu extends StatefulWidget {
   const DrawerMenu({Key? key}) : super(key: key);
@@ -14,38 +15,30 @@ class _DrawerMenuState extends State<DrawerMenu> {
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          const DrawerHeader(
-            decoration: BoxDecoration(
-              color: Colors.blue,
+          DrawerHeader(
+            decoration: const BoxDecoration(
+              color: AppColors.darkBlue,
             ),
-            child: Text('Drawer Header'),
+            child: Image.asset(
+              'assets/images/logo.png',
+              scale: 1.2,
+            ),
           ),
           ListTile(
-            title: const Text('User'),
+            title: const Text(
+              'Now playing',
+              style: TextStyle(
+                fontSize: 18,
+              ),
+            ),
             onTap: () {},
           ),
           Container(
             height: 2,
             color: Colors.grey.shade200,
           ),
-          ListTile(
-            title: const Text('Cars'),
-            onTap: () {},
-          ),
         ],
       ),
     );
   }
-
-  // void _onTapDrawer(PageRoute route) {
-  //   final currentRoute = ModalRoute.of(context);
-
-  //   if (currentRoute?.settings.name != route.settings.name) {
-  //     Navigator.of(context)
-  //       ..pop()
-  //       ..pushAndRemoveUntil<void>(route, (route) => false);
-  //   } else {
-  //     Navigator.of(context).pop();
-  //   }
-  // }
 }
