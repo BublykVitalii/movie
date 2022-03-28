@@ -12,30 +12,38 @@ class _DrawerMenuState extends State<DrawerMenu> {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
+      child: Column(
         children: [
           DrawerHeader(
+            padding: EdgeInsets.zero,
             decoration: const BoxDecoration(
               color: AppColors.darkBlue,
             ),
             child: Image.asset(
               'assets/images/logo.png',
+              width: double.infinity,
               scale: 1.2,
             ),
           ),
-          ListTile(
-            title: const Text(
-              'Now playing',
-              style: TextStyle(
-                fontSize: 18,
-              ),
+          Expanded(
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: [
+                ListTile(
+                  title: const Text(
+                    'Now playing',
+                    style: TextStyle(
+                      fontSize: 18,
+                    ),
+                  ),
+                  onTap: () {},
+                ),
+                Container(
+                  height: 2,
+                  color: Colors.grey.shade200,
+                ),
+              ],
             ),
-            onTap: () {},
-          ),
-          Container(
-            height: 2,
-            color: Colors.grey.shade200,
           ),
         ],
       ),

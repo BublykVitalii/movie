@@ -15,8 +15,6 @@ const double _kHeight = 30;
 const double _kFontSize = 15;
 const double _kRadius = 15;
 const double _maxCrossAxisExtent = 300;
-const double _mainAxisSpacing = 10;
-const double _crossAxisSpacing = 10;
 const double _childAspectRatio = 2 / 3;
 
 class MovieScreen extends StatefulWidget {
@@ -74,8 +72,8 @@ class _MovieScreenState extends State<MovieScreen> {
               },
               gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                 maxCrossAxisExtent: _maxCrossAxisExtent,
-                mainAxisSpacing: _mainAxisSpacing,
-                crossAxisSpacing: _crossAxisSpacing,
+                mainAxisSpacing: _kPadding,
+                crossAxisSpacing: _kPadding,
                 childAspectRatio: _childAspectRatio,
               ),
             );
