@@ -4,7 +4,8 @@ import 'package:movie/infrastructure/theme/app_colors.dart';
 import 'package:movie/movie/domain/movie.dart';
 import 'package:movie/movie/domain/movie_service.dart';
 import 'package:movie/movie/screens/cubit/movie_cubit.dart';
-import 'package:movie/ui_kit%20/drawer_menu.dart';
+import 'package:movie/movie/screens/movie_details_screen.dart';
+import 'package:movie/ui_kit/drawer_menu.dart';
 
 // ---Texts---
 const _kTitle = 'Movie';
@@ -104,7 +105,16 @@ class _MovieCard extends StatelessWidget {
       shadowColor: AppColors.darkBlue,
       borderRadius: BorderRadius.circular(_kRadius),
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MovieDetailsScreen(
+                movie: movie,
+              ),
+            ),
+          );
+        },
         child: Ink.image(
           image: NetworkImage(movie.posterPath),
           fit: BoxFit.cover,
