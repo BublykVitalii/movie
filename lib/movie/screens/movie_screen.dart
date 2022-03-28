@@ -10,16 +10,14 @@ import 'package:movie/movie/screens/drawer_menu_widget.dart';
 const _kTitle = 'Movie';
 
 // ---Parameters---
-const _kPadding = EdgeInsets.all(10);
-const _kGridDelegate = SliverGridDelegateWithMaxCrossAxisExtent(
-  maxCrossAxisExtent: 300,
-  mainAxisSpacing: 10,
-  crossAxisSpacing: 10,
-  childAspectRatio: 2 / 3,
-);
+const _kPadding = 10.0;
 const double _kHeight = 30;
 const double _kFontSize = 15;
 const double _kRadius = 15;
+const double _maxCrossAxisExtent = 300;
+const double _mainAxisSpacing = 10;
+const double _crossAxisSpacing = 10;
+const double _childAspectRatio = 2 / 3;
 
 class MovieScreen extends StatefulWidget {
   static const _routeName = '/movie-screen';
@@ -67,14 +65,19 @@ class _MovieScreenState extends State<MovieScreen> {
             );
           } else if (state is MovieSuccess && state.movies != null) {
             return GridView.builder(
-              padding: _kPadding,
+              padding: const EdgeInsets.all(_kPadding),
               itemCount: state.movies!.length,
               itemBuilder: (BuildContext context, int index) {
                 final movie = state.movies![index];
 
-                return MovieCard(movie: movie);
+                return _MovieCard(movie: movie);
               },
-              gridDelegate: _kGridDelegate,
+              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                maxCrossAxisExtent: _maxCrossAxisExtent,
+                mainAxisSpacing: _mainAxisSpacing,
+                crossAxisSpacing: _crossAxisSpacing,
+                childAspectRatio: _childAspectRatio,
+              ),
             );
           } else if (state is MovieError) {
             return const Center();
@@ -83,37 +86,6 @@ class _MovieScreenState extends State<MovieScreen> {
           return const SizedBox();
         },
       ),
-    );
-  }
-}
-
-class MovieCard extends StatelessWidget {
-  const MovieCard({
-    Key? key,
-    required this.movie,
-  }) : super(key: key);
-
-  final Movie movie;
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        _MovieCard(movie: movie),
-        Positioned.fill(
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              focusColor: AppColors.darkBlue,
-              hoverColor: AppColors.darkBlue,
-              highlightColor: AppColors.darkBlue,
-              splashColor: AppColors.darkBlue,
-              borderRadius: BorderRadius.circular(_kRadius),
-              onTap: () {},
-            ),
-          ),
-        ),
-      ],
     );
   }
 }
