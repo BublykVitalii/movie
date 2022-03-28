@@ -4,7 +4,6 @@ import 'package:movie/movie/api/client/movie_api_client.dart';
 import 'package:movie/movie/api/dto/movie_dto.dart';
 import 'package:movie/movie/domain/movie.dart';
 import 'package:movie/movie/domain/movie.repository.dart';
-import 'package:movie/movie/screens/cubit/movie_state.dart';
 
 @Singleton(as: MovieRepository)
 class HttpMovieRepository implements MovieRepository {
@@ -17,7 +16,7 @@ class HttpMovieRepository implements MovieRepository {
       final response = await _dio.get(MovieApiClient.nowPlaying);
       final movieDTO = MoviesDTO.fromJson(response.data);
       return movieDTO.toMovies();
-    } on MovieError catch (_) {
+    } on DioError catch (_) {
       rethrow;
     }
   }
