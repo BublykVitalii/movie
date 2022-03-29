@@ -20,4 +20,15 @@ class HttpMovieRepository implements MovieRepository {
       rethrow;
     }
   }
+
+  @override
+  Future<Movie> getMovieById(int id) async {
+    try {
+      final response = await _dio.get(MovieApiClient.getMovieById(id));
+      final movieDTO = MovieDTO.fromJson(response.data);
+      return movieDTO.toMovie();
+    } on DioError catch (_) {
+      rethrow;
+    }
+  }
 }

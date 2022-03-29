@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movie/infrastructure/theme/app_colors.dart';
 import 'package:movie/movie/domain/movie.dart';
-import 'package:movie/movie/domain/movie_service.dart';
 import 'package:movie/movie/screens/cubit/movie_cubit.dart';
 import 'package:movie/movie/screens/movie_details_screen.dart';
 import 'package:movie/ui_kit/drawer_menu.dart';
@@ -40,7 +39,6 @@ class MovieScreen extends StatefulWidget {
 }
 
 class _MovieScreenState extends State<MovieScreen> {
-  late final MovieService movie;
   MovieCubit get movieCubit => BlocProvider.of<MovieCubit>(context);
 
   @override
@@ -106,6 +104,8 @@ class _MovieCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(_kRadius),
       child: InkWell(
         onTap: () {
+          //BlocProvider.of<MovieCubit>(context).getMovieId(movie.id);
+
           Navigator.push(
             context,
             MaterialPageRoute(

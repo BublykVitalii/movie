@@ -1,10 +1,10 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:movie/movie/domain/movie.dart';
+import 'dart:ui';
 
 // ---Parameters---
 const _kPadding = 15.0;
-const double _kWidth = 20;
 const double _kHeight = 60;
 
 class MovieDetailsScreen extends StatefulWidget {
@@ -35,7 +35,9 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
             child: Row(
               children: [
                 _Poster(widget: widget),
-                const SizedBox(width: _kWidth),
+                const SizedBox(
+                  width: 20,
+                ),
                 Expanded(
                   flex: 1,
                   child: Column(
@@ -56,65 +58,40 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                       const SizedBox(
                         height: _kHeight,
                       ),
-                      _Text(
-                        title: 'Release Date:',
-                        text: '${widget.movie.releaseDate}',
-                      ),
+                      _ReleaseDate(widget: widget),
                     ],
                   ),
                 ),
               ],
             ),
           ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.only(
-                left: 15,
-                right: 15,
-                bottom: 230,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    '${widget.movie.title}',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  Container(
-                    color: Colors.white,
-                    height: 1,
-                  ),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  Text(
-                    '${widget.movie.overview}',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 24,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  Container(
-                    color: Colors.white,
-                    height: 1,
-                  ),
-                ],
-              ),
-            ),
-          ),
+          _Description(widget: widget),
         ],
+      ),
+    );
+  }
+}
+
+class _BackgroundImage extends StatelessWidget {
+  const _BackgroundImage({
+    Key? key,
+    required this.widget,
+  }) : super(key: key);
+
+  final MovieDetailsScreen widget;
+
+  @override
+  Widget build(BuildContext context) {
+    return Ink.image(
+      image: NetworkImage(widget.movie.posterPath),
+      fit: BoxFit.cover,
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.black.withOpacity(0.8),
+          ),
+        ),
       ),
     );
   }
@@ -134,11 +111,12 @@ class _Poster extends StatelessWidget {
       flex: 1,
       child: Container(
         height: 280,
+        width: 200,
         decoration: BoxDecoration(
           border: Border.all(),
-          color: Colors.white,
           borderRadius: BorderRadius.circular(20),
           image: DecorationImage(
+            fit: BoxFit.contain,
             image: NetworkImage(widget.movie.posterPath),
           ),
         ),
@@ -182,8 +160,8 @@ class _Text extends StatelessWidget {
   }
 }
 
-class _BackgroundImage extends StatelessWidget {
-  const _BackgroundImage({
+class _ReleaseDate extends StatelessWidget {
+  const _ReleaseDate({
     Key? key,
     required this.widget,
   }) : super(key: key);
@@ -192,16 +170,88 @@ class _BackgroundImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Ink.image(
-      image: NetworkImage(widget.movie.posterPath),
-      fit: BoxFit.cover,
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.black.withOpacity(0.8),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Release Date:',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 20,
           ),
         ),
+        Text(
+          DateFormat.yMMMMd('en_US').format(
+            DateTime.parse(widget.movie.releaseDate),
+          ),
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _Description extends StatelessWidget {
+  final MovieDetailsScreen widget;
+  const _Description({
+    Key? key,
+    required this.widget,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(
+        top: 320,
+        left: 15,
+        right: 15,
+      ),
+      child: ListView.builder(
+        itemCount: 1,
+        itemBuilder: (BuildContext context, int index) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                widget.movie.title,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              Container(
+                color: Colors.white,
+                height: 1,
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              Text(
+                widget.movie.overview,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 22,
+                ),
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              Container(
+                color: Colors.white,
+                height: 1,
+              ),
+            ],
+          );
+        },
       ),
     );
   }
