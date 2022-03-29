@@ -142,10 +142,16 @@ class _TitleTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: const EdgeInsets.only(
+        left: 20,
+        right: 20,
+      ),
       alignment: Alignment.center,
       height: _kHeight,
       child: Text(
         movie.title,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
         style: const TextStyle(
           color: Colors.white,
           fontSize: _kFontSize,

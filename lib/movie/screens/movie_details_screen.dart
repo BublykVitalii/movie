@@ -3,6 +3,11 @@ import 'package:intl/intl.dart';
 import 'package:movie/movie/domain/movie.dart';
 import 'dart:ui';
 
+// ---Texts---
+const _kScore = 'Score:';
+const _kRating = 'Rating:';
+const _kReleaseDate = 'Release Date:';
+
 // ---Parameters---
 const _kPadding = 15.0;
 const double _kHeight = 60;
@@ -22,51 +27,54 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: Text(
           widget.movie.title,
         ),
       ),
-      body: Stack(
-        children: [
-          _BackgroundImage(widget: widget),
-          Padding(
-            padding: const EdgeInsets.all(_kPadding),
-            child: Row(
-              children: [
-                _Poster(widget: widget),
-                const SizedBox(
-                  width: 20,
-                ),
-                Expanded(
-                  flex: 1,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _Text(
-                        title: 'Score:',
-                        text: '${widget.movie.voteAverage}',
-                      ),
-                      const SizedBox(
-                        height: _kHeight,
-                      ),
-                      _Text(
-                        title: 'Rating:',
-                        text: '${widget.movie.adult}',
-                      ),
-                      const SizedBox(
-                        height: _kHeight,
-                      ),
-                      _ReleaseDate(widget: widget),
-                    ],
+      body: SafeArea(
+        child: Stack(
+          children: [
+            _BackgroundImage(widget: widget),
+            Padding(
+              padding: const EdgeInsets.all(_kPadding),
+              child: Row(
+                children: [
+                  _Poster(widget: widget),
+                  const SizedBox(
+                    width: 20,
                   ),
-                ),
-              ],
+                  Expanded(
+                    flex: 1,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _Text(
+                          title: _kScore,
+                          text: '${widget.movie.voteAverage}',
+                        ),
+                        const SizedBox(
+                          height: _kHeight,
+                        ),
+                        _Text(
+                          title: _kRating,
+                          text: '${widget.movie.adult}',
+                        ),
+                        const SizedBox(
+                          height: _kHeight,
+                        ),
+                        _ReleaseDate(widget: widget),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          _Description(widget: widget),
-        ],
+            _Description(widget: widget),
+          ],
+        ),
       ),
     );
   }
@@ -174,7 +182,7 @@ class _ReleaseDate extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          'Release Date:',
+          _kReleaseDate,
           style: TextStyle(
             color: Colors.white,
             fontSize: 20,
@@ -210,48 +218,55 @@ class _Description extends StatelessWidget {
         left: 15,
         right: 15,
       ),
-      child: ListView.builder(
-        itemCount: 1,
-        itemBuilder: (BuildContext context, int index) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                widget.movie.title,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              Container(
-                color: Colors.white,
-                height: 1,
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              Text(
-                widget.movie.overview,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 22,
-                ),
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              Container(
-                color: Colors.white,
-                height: 1,
-              ),
-            ],
-          );
-        },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            widget.movie.title,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(
+            height: 30,
+          ),
+          Container(
+            color: Colors.white,
+            height: 1,
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: 1,
+              itemBuilder: (BuildContext context, int index) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    Text(
+                      widget.movie.overview,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 22,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    Container(
+                      color: Colors.white,
+                      height: 1,
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
