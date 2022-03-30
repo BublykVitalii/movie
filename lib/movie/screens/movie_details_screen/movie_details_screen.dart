@@ -18,8 +18,13 @@ const _kReleaseDate = 'Release Date:';
 // ---Parameters---
 const _kPadding = 15.0;
 const _kHeight = 30.0;
+const _kHeightLine = 1.0;
 const _kWidth = 20.0;
 const _kFontSize = 22.0;
+const _kFontSizeText = 18.0;
+const _kHeightContainer = 280.0;
+const _kWidthContainer = 200.0;
+const _kRadius = 20.0;
 
 class MovieDetailsScreen extends StatefulWidget {
   static const _routeName = '/movie-details-screen';
@@ -129,11 +134,11 @@ class _Poster extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 280,
-      width: 200,
+      height: _kHeightContainer,
+      width: _kWidthContainer,
       decoration: BoxDecoration(
         border: Border.all(),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(_kRadius),
         image: DecorationImage(
           fit: BoxFit.cover,
           image: NetworkImage(posterPath),
@@ -158,7 +163,7 @@ class _InfoText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: SizedBox(
-        height: 280,
+        height: _kHeightContainer,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -224,7 +229,7 @@ class _Text extends StatelessWidget {
     return RichText(
       text: TextSpan(
         style: const TextStyle(
-          fontSize: 18,
+          fontSize: _kFontSizeText,
         ),
         children: <TextSpan>[
           TextSpan(text: subTitle),
@@ -274,28 +279,16 @@ class Description extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(
-              height: 30,
-            ),
-            Container(
-              color: Colors.white,
-              height: 1,
-            ),
-            const SizedBox(
-              height: 30,
-            ),
+            const SizedBox(height: _kHeight),
+            Container(color: Colors.white, height: _kHeightLine),
+            const SizedBox(height: _kHeight),
             Text(
               overview!,
               style: context.theme.textTheme.subtitle1!
                   .copyWith(color: Colors.white),
             ),
-            const SizedBox(
-              height: 30,
-            ),
-            Container(
-              color: Colors.white,
-              height: 1,
-            ),
+            const SizedBox(height: _kHeight),
+            Container(color: Colors.white, height: _kHeightLine),
           ],
         ),
       ),
