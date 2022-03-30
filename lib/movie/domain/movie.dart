@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
 
+// enum Adult { Pg13, R }
+
 class Movie extends Equatable {
   final String title;
   final String posterPath;

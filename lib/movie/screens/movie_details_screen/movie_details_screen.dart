@@ -19,6 +19,7 @@ const _kReleaseDate = 'Release Date:';
 const _kPadding = 15.0;
 const _kHeight = 30.0;
 const _kWidth = 20.0;
+const _kFontSize = 22.0;
 
 class MovieDetailsScreen extends StatefulWidget {
   static const _routeName = '/movie-details-screen';
@@ -48,7 +49,7 @@ class MovieDetailsScreen extends StatefulWidget {
 
 class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
   MovieCubit get movieCubit => BlocProvider.of<MovieCubit>(context);
-  AppConfig get _config => GetIt.instance.get<AppConfig>();
+
   @override
   void initState() {
     movieCubit.getMovie(widget.movie.id);
@@ -71,19 +72,13 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
           body: SafeArea(
             child: Stack(
               children: [
-                BackgroundImage(posterPath: widget.movie.posterPath),
+                _BackgroundImage(posterPath: widget.movie.posterPath),
                 Padding(
                   padding: const EdgeInsets.all(_kPadding),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      InfoRow(
-                        posterPath: widget.movie.posterPath,
-                        voteAverage: '${widget.movie.voteAverage}',
-                        isAdult: '${widget.movie.isAdult}',
-                        releaseDate:
-                            widget.movie.releaseDate!.yMMMMd(_config.language),
-                      ),
+                      _InfoRow(movie: widget.movie),
                       const SizedBox(height: _kHeight),
                       TitleText(title: widget.movie.title),
                       Description(overview: widget.movie.overview),
@@ -99,38 +94,8 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
   }
 }
 
-class InfoRow extends StatelessWidget {
-  const InfoRow({
-    Key? key,
-    required this.posterPath,
-    required this.voteAverage,
-    required this.isAdult,
-    required this.releaseDate,
-  }) : super(key: key);
-  final String posterPath;
-  final String voteAverage;
-  final String isAdult;
-  final String releaseDate;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Poster(posterPath: posterPath),
-        const SizedBox(width: _kWidth),
-        InfoText(
-          voteAverage: voteAverage,
-          isAdult: isAdult,
-          releaseDate: releaseDate,
-        ),
-      ],
-    );
-  }
-}
-
-class BackgroundImage extends StatelessWidget {
-  const BackgroundImage({
+class _BackgroundImage extends StatelessWidget {
+  const _BackgroundImage({
     Key? key,
     required this.posterPath,
   }) : super(key: key);
@@ -153,8 +118,8 @@ class BackgroundImage extends StatelessWidget {
   }
 }
 
-class Poster extends StatelessWidget {
-  const Poster({
+class _Poster extends StatelessWidget {
+  const _Poster({
     Key? key,
     required this.posterPath,
   }) : super(key: key);
@@ -178,8 +143,8 @@ class Poster extends StatelessWidget {
   }
 }
 
-class InfoText extends StatelessWidget {
-  const InfoText({
+class _InfoText extends StatelessWidget {
+  const _InfoText({
     Key? key,
     required this.voteAverage,
     required this.isAdult,
@@ -200,15 +165,15 @@ class InfoText extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             _Text(
-              title: _kScore,
+              subTitle: _kScore,
               text: voteAverage,
             ),
             _Text(
-              title: _kRating,
+              subTitle: _kRating,
               text: isAdult,
             ),
             _Text(
-              title: _kReleaseDate,
+              subTitle: _kReleaseDate,
               text: releaseDate,
             ),
           ],
@@ -218,14 +183,40 @@ class InfoText extends StatelessWidget {
   }
 }
 
+class _InfoRow extends StatelessWidget {
+  const _InfoRow({
+    Key? key,
+    required this.movie,
+  }) : super(key: key);
+
+  final Movie movie;
+
+  AppConfig get _config => GetIt.instance.get<AppConfig>();
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        _Poster(posterPath: movie.posterPath),
+        const SizedBox(width: _kWidth),
+        _InfoText(
+          voteAverage: '${movie.voteAverage}',
+          isAdult: '${movie.isAdult}',
+          releaseDate: movie.releaseDate!.yMMMMd(_config.language),
+        ),
+      ],
+    );
+  }
+}
+
 class _Text extends StatelessWidget {
   const _Text({
     Key? key,
-    required this.title,
+    required this.subTitle,
     required this.text,
   }) : super(key: key);
 
-  final String title;
+  final String subTitle;
   final String text;
 
   @override
@@ -236,13 +227,11 @@ class _Text extends StatelessWidget {
           fontSize: 18,
         ),
         children: <TextSpan>[
-          TextSpan(text: title),
+          TextSpan(text: subTitle),
           TextSpan(
             text: '\n$text',
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-            ),
+            style: context.theme.textTheme.headline5!
+                .copyWith(color: Colors.white),
           ),
         ],
       ),
@@ -262,7 +251,7 @@ class TitleText extends StatelessWidget {
     return Text(
       title,
       style: context.theme.textTheme.bodyText1!.copyWith(
-        fontSize: 22.0,
+        fontSize: _kFontSize,
         color: Colors.white,
         fontWeight: FontWeight.bold,
       ),
@@ -297,10 +286,8 @@ class Description extends StatelessWidget {
             ),
             Text(
               overview!,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 18,
-              ),
+              style: context.theme.textTheme.subtitle1!
+                  .copyWith(color: Colors.white),
             ),
             const SizedBox(
               height: 30,

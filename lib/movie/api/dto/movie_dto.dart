@@ -51,6 +51,11 @@ class MovieDTO {
   factory MovieDTO.fromJson(Map<String, dynamic> json) =>
       _$MovieDTOFromJson(json);
 
+  //  if (isAdult == true) {
+  //    return 'R';
+  //  } else {return 'Pg 13';
+  //  }
+
   Movie toMovie() {
     return Movie(
       voteAverage: voteAverage,
@@ -63,3 +68,14 @@ class MovieDTO {
     );
   }
 }
+
+// String parseEnumToString(Adult isAdult) {
+//   switch (isAdult) {
+//     case Adult.Pg13:
+//       return 'Pg 13';
+
+//     case Adult.R:
+//       return 'R';
+//   }
+// }
+
