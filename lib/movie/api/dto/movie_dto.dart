@@ -30,7 +30,8 @@ class MovieDTO {
   final int id;
   @JsonKey(name: 'vote_average')
   final double voteAverage;
-  final bool adult;
+  @JsonKey(name: 'adult')
+  final bool isAdult;
   @JsonKey(name: 'release_date')
   final String releaseDate;
   final String overview;
@@ -40,7 +41,7 @@ class MovieDTO {
     this.posterPath,
     this.id,
     this.voteAverage,
-    this.adult,
+    this.isAdult,
     this.overview,
     this.releaseDate,
   );
@@ -52,10 +53,10 @@ class MovieDTO {
 
   Movie toMovie() {
     return Movie(
-      voteAverage,
-      adult,
-      releaseDate,
-      overview,
+      voteAverage: voteAverage,
+      isAdult: isAdult,
+      releaseDate: DateTime.parse(releaseDate),
+      overview: overview,
       id: id,
       posterPath: _appConfig.posterUrl + posterPath,
       title: title,

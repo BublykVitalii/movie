@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:movie/infrastructure/theme/app_colors.dart';
 import 'package:movie/infrastructure/theme/theme_extensions.dart';
-import 'movie/screens/movie_screen.dart';
+import 'movie/screens/movies_screen/movie_screen.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);

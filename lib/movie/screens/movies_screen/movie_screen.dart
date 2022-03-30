@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:movie/infrastructure/theme/app_colors.dart';
 import 'package:movie/movie/domain/movie.dart';
-import 'package:movie/movie/screens/cubit/movie_cubit.dart';
-import 'package:movie/movie/screens/movie_details_screen.dart';
+import 'package:movie/movie/screens/movie_details_screen/movie_details_screen.dart';
+import 'package:movie/movie/screens/movies_screen/cubit/movie_cubit.dart';
 import 'package:movie/ui_kit/drawer_menu.dart';
 
 // ---Texts---
@@ -20,7 +21,7 @@ const double _childAspectRatio = 2 / 3;
 class MovieScreen extends StatefulWidget {
   static const _routeName = '/movie-screen';
 
-  static PageRoute get route {
+  static PageRoute<MovieScreen> get route {
     return MaterialPageRoute(
       settings: const RouteSettings(name: _routeName),
       builder: (context) {
@@ -97,6 +98,8 @@ class _MovieCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final movieCubit = BlocProvider.of<MovieCubit>(context);
+
     return Material(
       clipBehavior: Clip.antiAlias,
       elevation: 2,
@@ -104,16 +107,8 @@ class _MovieCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(_kRadius),
       child: InkWell(
         onTap: () {
-          //BlocProvider.of<MovieCubit>(context).getMovieId(movie.id);
-
           Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => MovieDetailsScreen(
-                movie: movie,
-              ),
-            ),
-          );
+              context, MovieDetailsScreen.route(movie.id, movie, movieCubit));
         },
         child: Ink.image(
           image: NetworkImage(movie.posterPath),

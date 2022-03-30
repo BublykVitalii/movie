@@ -20,7 +20,7 @@ class MovieCubit extends Cubit<MovieState> {
     }
   }
 
-  void getMovieId(int id) async {
+  void getMovie(int id) async {
     emit(MovieLoading());
     try {
       final movie = await moviesService.getMovieById(id);
