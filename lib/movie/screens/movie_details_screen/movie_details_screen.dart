@@ -69,44 +69,50 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
       appBar: AppBar(
         title: Text(movieCubit.movie.title),
       ),
-      body: BlocBuilder<MovieDetailsCubit, MovieDetailsState>(
-        builder: (context, state) {
-          if (state is MovieDetailsLoading) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (state is MovieDetailsSuccess && state.movie != null) {
-            final Movie movie = state.movie!;
-            return SafeArea(
-              child: Stack(
-                children: [
-                  _BackgroundImage(posterPath: movie.posterPath),
-                  Padding(
-                    padding: const EdgeInsets.all(_kPadding),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _InfoRow(movie: movie),
-                        const SizedBox(height: _kHeight),
-                        _TitleText(title: movie.title),
-                        _Description(overview: movie.overview),
-                      ],
-                    ),
+      body: Stack(
+        children: [
+          _BackgroundImage(posterPath: movieCubit.movie.posterPath),
+          BlocBuilder<MovieDetailsCubit, MovieDetailsState>(
+            builder: (context, state) {
+              if (state is MovieDetailsLoading) {
+                return const Center(
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
                   ),
-                ],
-              ),
-            );
-          } else if (state is MovieDetailsError) {
-            return Center(
-              child: Text(
-                _errorText,
-                style: context.theme.textTheme.headline5!
-                    .copyWith(color: Colors.red),
-              ),
-            );
-          }
-          return const SizedBox();
-        },
+                );
+              } else if (state is MovieDetailsSuccess && state.movie != null) {
+                final Movie movie = state.movie!;
+                return SafeArea(
+                  child: Stack(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(_kPadding),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _InfoRow(movie: movie),
+                            const SizedBox(height: _kHeight),
+                            _TitleText(title: movie.title),
+                            _Description(overview: movie.overview),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              } else if (state is MovieDetailsError) {
+                return Center(
+                  child: Text(
+                    _errorText,
+                    style: context.theme.textTheme.headline5!
+                        .copyWith(color: Colors.red),
+                  ),
+                );
+              }
+              return const SizedBox();
+            },
+          ),
+        ],
       ),
     );
   }
