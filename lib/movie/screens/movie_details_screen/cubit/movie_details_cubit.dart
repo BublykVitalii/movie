@@ -7,14 +7,16 @@ import 'package:movie/movie/domain/movie_service.dart';
 part 'movie_details_state.dart';
 
 class MovieDetailsCubit extends Cubit<MovieDetailsState> {
-  MovieDetailsCubit(MovieDetailsState initialState) : super(initialState);
+  final Movie movie;
+
+  MovieDetailsCubit(this.movie) : super(MovieDetailsInitial(movie: movie));
   MovieService get moviesService => GetIt.instance.get<MovieService>();
 
-  void getMovie(int id) async {
+  void getMovie() async {
     emit(MovieDetailsLoading());
     try {
-      final movie = await moviesService.getMovieById(id);
-      emit(MovieDetailsSuccess(movie: movie));
+      final movieDetails = await moviesService.getMovieById(movie.id);
+      emit(MovieDetailsSuccess(movie: movieDetails!));
     } catch (e) {
       emit(MovieDetailsError());
     }

@@ -68,7 +68,6 @@ class MovieDTO {
       case true:
         return AgeLimit.r;
       case false:
-        return AgeLimit.pgThirteen;
       default:
         return AgeLimit.pgThirteen;
     }

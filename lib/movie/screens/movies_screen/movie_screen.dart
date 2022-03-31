@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:movie/infrastructure/theme/app_colors.dart';
+import 'package:movie/infrastructure/theme/theme_extensions.dart';
 import 'package:movie/movie/domain/movie.dart';
 import 'package:movie/movie/screens/movie_details_screen/movie_details_screen.dart';
 import 'package:movie/movie/screens/movies_screen/cubit/movie_cubit.dart';
@@ -9,14 +10,16 @@ import 'package:movie/ui_kit/drawer_menu.dart';
 
 // ---Texts---
 const _kTitle = 'Movie';
+const _errorText = 'Error';
 
 // ---Parameters---
-const _kPadding = 10.0;
+const double _kPadding = 10.0;
 const double _kHeight = 30;
 const double _kFontSize = 15;
 const double _kRadius = 15;
 const double _maxCrossAxisExtent = 300;
 const double _childAspectRatio = 2 / 3;
+const double _kPaddingLeftRight = 20;
 
 class MovieScreen extends StatefulWidget {
   static const _routeName = '/movie-screen';
@@ -78,7 +81,13 @@ class _MovieScreenState extends State<MovieScreen> {
               ),
             );
           } else if (state is MovieError) {
-            return const Center();
+            return Center(
+              child: Text(
+                _errorText,
+                style: context.theme.textTheme.headline5!
+                    .copyWith(color: Colors.red),
+              ),
+            );
           }
 
           return const SizedBox();
@@ -105,8 +114,7 @@ class _MovieCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(_kRadius),
       child: InkWell(
         onTap: () {
-          Navigator.push(
-              context, MovieDetailsScreen.route(movie.id, movie.title));
+          Navigator.push(context, MovieDetailsScreen.route(movie));
         },
         child: Ink.image(
           image: NetworkImage(movie.posterPath),
@@ -136,8 +144,8 @@ class _TitleTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.only(
-        left: 20,
-        right: 20,
+        left: _kPaddingLeftRight,
+        right: _kPaddingLeftRight,
       ),
       alignment: Alignment.center,
       height: _kHeight,

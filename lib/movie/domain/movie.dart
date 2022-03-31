@@ -31,4 +31,14 @@ class Movie extends Equatable {
         releaseDate,
         overview,
       ];
+
+  String adultToString(AgeLimit? ageLimit) {
+    switch (ageLimit) {
+      case AgeLimit.pgThirteen:
+        return 'PG-13';
+      case AgeLimit.r:
+      default:
+        return 'R';
+    }
+  }
 }
