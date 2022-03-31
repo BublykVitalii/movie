@@ -13,12 +13,12 @@ class MovieDetailsCubit extends Cubit<MovieDetailsState> {
   MovieService get moviesService => GetIt.instance.get<MovieService>();
 
   void getMovie() async {
-    emit(MovieDetailsLoading());
+    emit(MovieDetailsLoading(movie: movie));
     try {
       final movieDetails = await moviesService.getMovieById(movie.id);
       emit(MovieDetailsSuccess(movie: movieDetails!));
     } catch (e) {
-      emit(MovieDetailsError());
+      emit(MovieDetailsError(movie: movie));
     }
   }
 }

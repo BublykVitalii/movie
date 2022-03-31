@@ -19,7 +19,6 @@ const _errorText = 'Error';
 // ---Parameters---
 const _kPadding = 15.0;
 const _kHeight = 30.0;
-const _kHeightLine = 1.0;
 const _kWidth = 20.0;
 const _kFontSize = 22.0;
 const _kFontSizeText = 18.0;
@@ -62,58 +61,64 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
     super.initState();
   }
 
+//
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      appBar: AppBar(
-        title: Text(movieCubit.movie.title),
-      ),
-      body: Stack(
-        children: [
-          _BackgroundImage(posterPath: movieCubit.movie.posterPath),
-          BlocBuilder<MovieDetailsCubit, MovieDetailsState>(
-            builder: (context, state) {
-              if (state is MovieDetailsLoading) {
-                return const Center(
+    return BlocBuilder<MovieDetailsCubit, MovieDetailsState>(
+      builder: (context, state) {
+        if (state is MovieDetailsLoading) {
+          return Scaffold(
+            body: Stack(
+              children: [
+                _BackgroundImage(posterPath: movieCubit.movie.posterPath),
+                const Center(
                   child: CircularProgressIndicator(
+                    backgroundColor: Colors.transparent,
                     color: Colors.white,
                   ),
-                );
-              } else if (state is MovieDetailsSuccess && state.movie != null) {
-                final Movie movie = state.movie!;
-                return SafeArea(
-                  child: Stack(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(_kPadding),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            _InfoRow(movie: movie),
-                            const SizedBox(height: _kHeight),
-                            _TitleText(title: movie.title),
-                            _Description(overview: movie.overview),
-                          ],
-                        ),
-                      ),
-                    ],
+                ),
+              ],
+            ),
+          );
+        }
+        if (state is MovieDetailsSuccess && state.movie != null) {
+          final Movie movie = state.movie!;
+          return Scaffold(
+            backgroundColor: Colors.transparent,
+            appBar: AppBar(
+              title: Text(movieCubit.movie.title),
+            ),
+            body: SafeArea(
+              child: Stack(
+                children: [
+                  _BackgroundImage(posterPath: movieCubit.movie.posterPath),
+                  Padding(
+                    padding: const EdgeInsets.all(_kPadding),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _InfoRow(movie: movie),
+                        const SizedBox(height: _kHeight),
+                        _TitleText(title: movie.title),
+                        _Description(overview: movie.overview),
+                      ],
+                    ),
                   ),
-                );
-              } else if (state is MovieDetailsError) {
-                return Center(
-                  child: Text(
-                    _errorText,
-                    style: context.theme.textTheme.headline5!
-                        .copyWith(color: Colors.red),
-                  ),
-                );
-              }
-              return const SizedBox();
-            },
-          ),
-        ],
-      ),
+                ],
+              ),
+            ),
+          );
+        } else if (state is MovieDetailsError) {
+          return Center(
+            child: Text(
+              _errorText,
+              style: context.theme.textTheme.headline5!
+                  .copyWith(color: Colors.red),
+            ),
+          );
+        }
+        return const SizedBox();
+      },
     );
   }
 }
@@ -159,7 +164,9 @@ class _Poster extends StatelessWidget {
       height: _kHeightContainer,
       width: _kWidthContainer,
       decoration: BoxDecoration(
-        border: Border.all(),
+        border: Border.all(
+          color: Colors.white,
+        ),
         borderRadius: BorderRadius.circular(_kRadius),
         image: DecorationImage(
           fit: BoxFit.cover,
@@ -300,7 +307,7 @@ class _Description extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: _kHeight),
-            Container(color: Colors.white, height: _kHeightLine),
+            const Divider(color: Colors.white),
             const SizedBox(height: _kHeight),
             Text(
               overview!,
@@ -308,7 +315,7 @@ class _Description extends StatelessWidget {
                   .copyWith(color: Colors.white),
             ),
             const SizedBox(height: _kHeight),
-            Container(color: Colors.white, height: _kHeightLine),
+            const Divider(color: Colors.white),
           ],
         ),
       ),
