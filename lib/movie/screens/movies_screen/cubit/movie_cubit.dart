@@ -19,14 +19,4 @@ class MovieCubit extends Cubit<MovieState> {
       emit(MovieError());
     }
   }
-
-  void getMovie(int id) async {
-    emit(MovieLoading());
-    try {
-      final movie = await moviesService.getMovieById(id);
-      emit(MovieSuccess(movie: movie));
-    } catch (e) {
-      emit(MovieError());
-    }
-  }
 }

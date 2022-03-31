@@ -98,8 +98,6 @@ class _MovieCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final movieCubit = BlocProvider.of<MovieCubit>(context);
-
     return Material(
       clipBehavior: Clip.antiAlias,
       elevation: 2,
@@ -108,7 +106,7 @@ class _MovieCard extends StatelessWidget {
       child: InkWell(
         onTap: () {
           Navigator.push(
-              context, MovieDetailsScreen.route(movie.id, movie, movieCubit));
+              context, MovieDetailsScreen.route(movie.id, movie.title));
         },
         child: Ink.image(
           image: NetworkImage(movie.posterPath),

@@ -7,7 +7,7 @@ import 'package:get_it/get_it.dart';
 import 'package:movie/config.dart';
 import 'package:movie/infrastructure/theme/theme_extensions.dart';
 import 'package:movie/movie/domain/movie.dart';
-import 'package:movie/movie/screens/movies_screen/cubit/movie_cubit.dart';
+import 'package:movie/movie/screens/movie_details_screen/cubit/movie_details_cubit.dart';
 import 'package:movie/utils/date_time_formatting_extension.dart';
 
 // ---Texts---
@@ -29,23 +29,24 @@ const _kRadius = 20.0;
 class MovieDetailsScreen extends StatefulWidget {
   static const _routeName = '/movie-details-screen';
 
-  static PageRoute<MovieDetailsScreen> route(
-      int id, Movie movie, MovieCubit movieCubit) {
+  static PageRoute<MovieDetailsScreen> route(int id, String title) {
     return MaterialPageRoute(
       settings: const RouteSettings(name: _routeName),
       builder: (context) {
-        return BlocProvider.value(
-          value: movieCubit,
-          child: MovieDetailsScreen(movie: movie),
+        return BlocProvider(
+          create: (context) => MovieDetailsCubit(MovieDetailsInitial()),
+          child: MovieDetailsScreen(id: id, title: title),
         );
       },
     );
   }
 
-  final Movie movie;
+  final int id;
+  final String title;
   const MovieDetailsScreen({
     Key? key,
-    required this.movie,
+    required this.id,
+    required this.title,
   }) : super(key: key);
 
   @override
@@ -53,48 +54,54 @@ class MovieDetailsScreen extends StatefulWidget {
 }
 
 class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
-  MovieCubit get movieCubit => BlocProvider.of<MovieCubit>(context);
+  MovieDetailsCubit get movieCubit =>
+      BlocProvider.of<MovieDetailsCubit>(context);
 
   @override
   void initState() {
-    movieCubit.getMovie(widget.movie.id);
+    movieCubit.getMovie(widget.id);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MovieCubit, MovieState>(
-      builder: (context, state) {
-        String title = '';
-        if (state is MovieSuccess) {
-          title = state.movie!.title;
-        }
-        return Scaffold(
-          backgroundColor: Colors.transparent,
-          appBar: AppBar(
-            title: Text(title),
-          ),
-          body: SafeArea(
-            child: Stack(
-              children: [
-                _BackgroundImage(posterPath: widget.movie.posterPath),
-                Padding(
-                  padding: const EdgeInsets.all(_kPadding),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _InfoRow(movie: widget.movie),
-                      const SizedBox(height: _kHeight),
-                      TitleText(title: widget.movie.title),
-                      Description(overview: widget.movie.overview),
-                    ],
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: BlocBuilder<MovieDetailsCubit, MovieDetailsState>(
+        builder: (context, state) {
+          if (state is MovieDetailsLoading) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (state is MovieDetailsSuccess && state.movie != null) {
+            Movie movie = state.movie!;
+
+            return SafeArea(
+              child: Stack(
+                children: [
+                  _BackgroundImage(posterPath: movie.posterPath),
+                  Padding(
+                    padding: const EdgeInsets.all(_kPadding),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _InfoRow(movie: movie),
+                        const SizedBox(height: _kHeight),
+                        TitleText(title: movie.title),
+                        Description(overview: movie.overview),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
+                ],
+              ),
+            );
+          }
+          return const SizedBox();
+        },
+      ),
     );
   }
 }
@@ -206,11 +213,22 @@ class _InfoRow extends StatelessWidget {
         const SizedBox(width: _kWidth),
         _InfoText(
           voteAverage: '${movie.voteAverage}',
-          isAdult: '${movie.isAdult}',
+          isAdult: adultToString(movie.isAdult),
           releaseDate: movie.releaseDate!.yMMMMd(_config.language),
         ),
       ],
     );
+  }
+
+  String adultToString(AgeLimit? ageLimit) {
+    switch (ageLimit) {
+      case AgeLimit.pgThirteen:
+        return 'PG-13';
+      case AgeLimit.r:
+        return 'R';
+      default:
+        return 'R';
+    }
   }
 }
 

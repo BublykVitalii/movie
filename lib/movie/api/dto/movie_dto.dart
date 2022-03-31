@@ -51,15 +51,10 @@ class MovieDTO {
   factory MovieDTO.fromJson(Map<String, dynamic> json) =>
       _$MovieDTOFromJson(json);
 
-  //  if (isAdult == true) {
-  //    return 'R';
-  //  } else {return 'Pg 13';
-  //  }
-
   Movie toMovie() {
     return Movie(
       voteAverage: voteAverage,
-      isAdult: isAdult,
+      isAdult: _parseAgeLimit(isAdult),
       releaseDate: DateTime.parse(releaseDate),
       overview: overview,
       id: id,
@@ -67,15 +62,15 @@ class MovieDTO {
       title: title,
     );
   }
+
+  AgeLimit? _parseAgeLimit(bool isAdult) {
+    switch (isAdult) {
+      case true:
+        return AgeLimit.r;
+      case false:
+        return AgeLimit.pgThirteen;
+      default:
+        return AgeLimit.pgThirteen;
+    }
+  }
 }
-
-// String parseEnumToString(Adult isAdult) {
-//   switch (isAdult) {
-//     case Adult.Pg13:
-//       return 'Pg 13';
-
-//     case Adult.R:
-//       return 'R';
-//   }
-// }
-
