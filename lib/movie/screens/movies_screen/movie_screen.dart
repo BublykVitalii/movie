@@ -56,6 +56,12 @@ class _MovieScreenState extends State<MovieScreen> {
     return Scaffold(
       drawer: const DrawerMenu(),
       appBar: AppBar(
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.sync_rounded),
+            onPressed: () {},
+          ),
+        ],
         title: const Text(_kTitle),
       ),
       body: BlocBuilder<MovieCubit, MovieState>(
