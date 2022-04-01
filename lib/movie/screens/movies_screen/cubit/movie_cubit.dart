@@ -8,12 +8,12 @@ part 'movie_state.dart';
 
 class MovieCubit extends Cubit<MovieState> {
   MovieCubit() : super(MovieInitial());
-  MovieService get movies => GetIt.instance.get<MovieService>();
+  MovieService get moviesService => GetIt.instance.get<MovieService>();
 
   void getNowPlaying(int number) async {
     emit(MovieLoading());
     try {
-      final nowPlaying = await movies.getNowPlaying();
+      final nowPlaying = await moviesService.getNowPlaying();
       emit(MovieSuccess(movies: nowPlaying));
     } catch (e) {
       emit(MovieError());

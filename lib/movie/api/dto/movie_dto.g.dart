@@ -17,4 +17,8 @@ MovieDTO _$MovieDTOFromJson(Map<String, dynamic> json) => MovieDTO(
       json['title'] as String,
       json['poster_path'] as String,
       json['id'] as int,
+      (json['vote_average'] as num).toDouble(),
+      json['adult'] as bool,
+      json['overview'] as String,
+      json['release_date'] as String,
     );

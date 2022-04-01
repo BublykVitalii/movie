@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:json_annotation/json_annotation.dart';
+
 import 'package:movie/config.dart';
 import 'package:movie/movie/domain/movie.dart';
 
@@ -27,11 +28,22 @@ class MovieDTO {
   @JsonKey(name: 'poster_path')
   final String posterPath;
   final int id;
+  @JsonKey(name: 'vote_average')
+  final double voteAverage;
+  @JsonKey(name: 'adult')
+  final bool isAdult;
+  @JsonKey(name: 'release_date')
+  final String releaseDate;
+  final String overview;
 
   MovieDTO(
     this.title,
     this.posterPath,
     this.id,
+    this.voteAverage,
+    this.isAdult,
+    this.overview,
+    this.releaseDate,
   );
 
   final _appConfig = GetIt.instance.get<AppConfig>();
@@ -41,9 +53,23 @@ class MovieDTO {
 
   Movie toMovie() {
     return Movie(
+      voteAverage: voteAverage,
+      isAdult: _parseAgeLimit(isAdult),
+      releaseDate: DateTime.parse(releaseDate),
+      overview: overview,
       id: id,
       posterPath: _appConfig.posterUrl + posterPath,
       title: title,
     );
+  }
+
+  AgeLimit? _parseAgeLimit(bool isAdult) {
+    switch (isAdult) {
+      case true:
+        return AgeLimit.r;
+      case false:
+      default:
+        return AgeLimit.pgThirteen;
+    }
   }
 }
