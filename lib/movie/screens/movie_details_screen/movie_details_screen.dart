@@ -61,63 +61,53 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
     super.initState();
   }
 
-//
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<MovieDetailsCubit, MovieDetailsState>(
       builder: (context, state) {
-        if (state is MovieDetailsLoading) {
-          return Scaffold(
-            body: Stack(
-              children: [
-                _BackgroundImage(posterPath: movieCubit.movie.posterPath),
-                const Center(
-                  child: CircularProgressIndicator(
-                    backgroundColor: Colors.transparent,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
-            ),
-          );
-        }
-        if (state is MovieDetailsSuccess && state.movie != null) {
-          final Movie movie = state.movie!;
-          return Scaffold(
+        final Movie movie = state.movie!;
+
+        Widget content = const Center(
+          child: CircularProgressIndicator(
             backgroundColor: Colors.transparent,
-            appBar: AppBar(
-              title: Text(movieCubit.movie.title),
-            ),
-            body: SafeArea(
-              child: Stack(
-                children: [
-                  _BackgroundImage(posterPath: movieCubit.movie.posterPath),
-                  Padding(
-                    padding: const EdgeInsets.all(_kPadding),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _InfoRow(movie: movie),
-                        const SizedBox(height: _kHeight),
-                        _TitleText(title: movie.title),
-                        _Description(overview: movie.overview),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            color: Colors.white,
+          ),
+        );
+
+        if (state is MovieDetailsSuccess) {
+          content = Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _InfoRow(movie: movie),
+              const SizedBox(height: _kHeight),
+              _TitleText(title: movie.title),
+              _Description(overview: movie.overview),
+            ],
           );
         } else if (state is MovieDetailsError) {
-          return Center(
+          content = Center(
             child: Text(
               _errorText,
               style: context.theme.textTheme.headline5!
-                  .copyWith(color: Colors.red),
+                  .copyWith(color: Colors.white),
             ),
           );
         }
-        return const SizedBox();
+
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(movie.title),
+          ),
+          body: Stack(
+            children: [
+              _BackgroundImage(posterPath: movie.posterPath),
+              Padding(
+                padding: const EdgeInsets.all(_kPadding),
+                child: content,
+              ),
+            ],
+          ),
+        );
       },
     );
   }
