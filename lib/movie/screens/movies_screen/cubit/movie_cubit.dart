@@ -14,12 +14,13 @@ class MovieCubit extends Cubit<MovieState> {
   List<Movie> listMovie = [];
 
   void getNowPlaying(int page) async {
-    emit(MovieLoading());
+    if (page == 1) {
+      emit(MovieLoading());
+    }
+
     try {
       final nowPlaying = await moviesService.getNowPlaying(page);
       listMovie.addAll(nowPlaying!);
-      // print(listMovie.length);
-      // print(nowPlaying.length);
       emit(MovieSuccess(movies: listMovie));
     } catch (e) {
       emit(MovieError());

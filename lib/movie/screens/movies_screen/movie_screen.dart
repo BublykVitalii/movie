@@ -58,9 +58,6 @@ class _MovieScreenState extends State<MovieScreen> {
     if (_controller.offset >= _controller.position.maxScrollExtent &&
         !_controller.position.outOfRange) {
       movieCubit.getNextPage();
-      // setState(() {
-      //   print("reach the bottom");
-      // });
     }
   }
 
@@ -84,7 +81,9 @@ class _MovieScreenState extends State<MovieScreen> {
               itemCount: state.movies!.length,
               itemBuilder: (BuildContext context, int index) {
                 final movie = state.movies![index];
-                return _MovieCard(movie: movie);
+                return index >= state.movies!.length - 2
+                    ? const BottomLoader()
+                    : _MovieCard(movie: movie);
               },
               gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                 maxCrossAxisExtent: _maxCrossAxisExtent,
@@ -170,6 +169,23 @@ class _TitleTile extends StatelessWidget {
           color: Colors.white,
           fontSize: _kFontSize,
           fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+}
+
+class BottomLoader extends StatelessWidget {
+  const BottomLoader({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: SizedBox(
+        height: 24,
+        width: 24,
+        child: CircularProgressIndicator(
+          color: AppColors.darkBlue,
         ),
       ),
     );
