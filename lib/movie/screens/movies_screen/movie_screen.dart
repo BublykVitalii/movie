@@ -45,10 +45,23 @@ class MovieScreen extends StatefulWidget {
 class _MovieScreenState extends State<MovieScreen> {
   MovieCubit get movieCubit => BlocProvider.of<MovieCubit>(context);
 
+  final _controller = ScrollController(initialScrollOffset: 50.0);
+
   @override
   void initState() {
     movieCubit.getNowPlaying(1);
     super.initState();
+    _controller.addListener(_scrollListener);
+  }
+
+  void _scrollListener() {
+    if (_controller.offset >= _controller.position.maxScrollExtent &&
+        !_controller.position.outOfRange) {
+      movieCubit.getNextPage();
+      // setState(() {
+      //   print("reach the bottom");
+      // });
+    }
   }
 
   @override
@@ -56,12 +69,6 @@ class _MovieScreenState extends State<MovieScreen> {
     return Scaffold(
       drawer: const DrawerMenu(),
       appBar: AppBar(
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.sync_rounded),
-            onPressed: () {},
-          ),
-        ],
         title: const Text(_kTitle),
       ),
       body: BlocBuilder<MovieCubit, MovieState>(
@@ -72,11 +79,11 @@ class _MovieScreenState extends State<MovieScreen> {
             );
           } else if (state is MovieSuccess && state.movies != null) {
             return GridView.builder(
+              controller: _controller,
               padding: const EdgeInsets.all(_kPadding),
               itemCount: state.movies!.length,
               itemBuilder: (BuildContext context, int index) {
                 final movie = state.movies![index];
-
                 return _MovieCard(movie: movie);
               },
               gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(

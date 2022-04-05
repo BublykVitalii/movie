@@ -11,6 +11,8 @@ MoviesDTO _$MoviesDTOFromJson(Map<String, dynamic> json) => MoviesDTO(
       results: (json['results'] as List<dynamic>)
           .map((e) => MovieDTO.fromJson(e as Map<String, dynamic>))
           .toList(),
+      totalResults: json['total_pages'] as int,
+      totalPages: json['total_results'] as int,
     );
 
 MovieDTO _$MovieDTOFromJson(Map<String, dynamic> json) => MovieDTO(

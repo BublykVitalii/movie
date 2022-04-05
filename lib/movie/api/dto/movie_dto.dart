@@ -10,10 +10,16 @@ part 'movie_dto.g.dart';
 class MoviesDTO {
   final int page;
   final List<MovieDTO> results;
+  @JsonKey(name: 'total_pages')
+  final int totalResults;
+  @JsonKey(name: 'total_results')
+  final int totalPages;
 
   MoviesDTO({
     required this.page,
     required this.results,
+    required this.totalResults,
+    required this.totalPages,
   });
   factory MoviesDTO.fromJson(Map<String, dynamic> json) =>
       _$MoviesDTOFromJson(json);

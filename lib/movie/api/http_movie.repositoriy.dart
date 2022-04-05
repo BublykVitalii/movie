@@ -11,9 +11,14 @@ class HttpMovieRepository implements MovieRepository {
   final Dio _dio;
 
   @override
-  Future<List<Movie>> getNowPlaying() async {
+  Future<List<Movie>> getNowPlaying(int page) async {
     try {
-      final response = await _dio.get(MovieApiClient.nowPlaying);
+      final response = await _dio.get(
+        MovieApiClient.nowPlaying,
+        queryParameters: {
+          'page': page,
+        },
+      );
       final movieDTO = MoviesDTO.fromJson(response.data);
       return movieDTO.toMovies();
     } on DioError catch (_) {

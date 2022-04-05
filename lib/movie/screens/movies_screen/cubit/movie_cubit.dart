@@ -10,13 +10,25 @@ class MovieCubit extends Cubit<MovieState> {
   MovieCubit() : super(MovieInitial());
   MovieService get moviesService => GetIt.instance.get<MovieService>();
 
-  void getNowPlaying(int number) async {
+  int page = 1;
+  List<Movie> listMovie = [];
+
+  void getNowPlaying(int page) async {
     emit(MovieLoading());
     try {
-      final nowPlaying = await moviesService.getNowPlaying();
-      emit(MovieSuccess(movies: nowPlaying));
+      final nowPlaying = await moviesService.getNowPlaying(page);
+      listMovie.addAll(nowPlaying!);
+      // print(listMovie.length);
+      // print(nowPlaying.length);
+      emit(MovieSuccess(movies: listMovie));
     } catch (e) {
       emit(MovieError());
     }
+  }
+
+  void getNextPage() {
+    var nextPage = page + 1;
+    page = nextPage;
+    getNowPlaying(nextPage);
   }
 }
