@@ -68,43 +68,51 @@ class _MovieScreenState extends State<MovieScreen> {
       appBar: AppBar(
         title: const Text(_kTitle),
       ),
-      body: BlocBuilder<MovieCubit, MovieState>(
-        builder: (context, state) {
-          if (state is MovieLoading) {
+      body: BlocBuilder<MovieCubit, MovieState>(builder: (context, state) {
+        switch (state.status) {
+          case MovieStatus.loading:
             return const Center(
               child: CircularProgressIndicator(),
             );
-          } else if (state is MovieSuccess && state.movies != null) {
-            return GridView.builder(
-              controller: _controller,
-              padding: const EdgeInsets.all(_kPadding),
-              itemCount: state.movies!.length,
-              itemBuilder: (BuildContext context, int index) {
-                final movie = state.movies![index];
-                return index >= state.movies!.length - 2
-                    ? const BottomLoader()
-                    : _MovieCard(movie: movie);
-              },
-              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: _maxCrossAxisExtent,
-                mainAxisSpacing: _kPadding,
-                crossAxisSpacing: _kPadding,
-                childAspectRatio: _childAspectRatio,
-              ),
-            );
-          } else if (state is MovieError) {
-            return Center(
-              child: Text(
-                _errorText,
-                style: context.theme.textTheme.headline5!
-                    .copyWith(color: Colors.red),
-              ),
-            );
-          }
+          case MovieStatus.success:
+            if (state.movies.isEmpty) {
+              return GridView.builder(
+                itemBuilder: (BuildContext context, int index) {
+                  final movie = state.movies[index];
+                  return index >= state.movies.length
+                      ? const BottomLoader()
+                      : _MovieCard(movie: movie);
+                },
+                itemCount: state.hasReachedMax
+                    ? state.movies.length
+                    : state.movies.length + 1,
+                controller: _controller,
+                padding: const EdgeInsets.all(_kPadding),
+                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: _maxCrossAxisExtent,
+                  mainAxisSpacing: _kPadding,
+                  crossAxisSpacing: _kPadding,
+                  childAspectRatio: _childAspectRatio,
+                ),
+              );
+            }
+            break;
 
-          return const SizedBox();
-        },
-      ),
+          case MovieStatus.error:
+            {
+              return Center(
+                child: Text(
+                  _errorText,
+                  style: context.theme.textTheme.headline5!
+                      .copyWith(color: Colors.red),
+                ),
+              );
+            }
+          default:
+            return const SizedBox();
+        }
+        return const SizedBox();
+      }),
     );
   }
 }
