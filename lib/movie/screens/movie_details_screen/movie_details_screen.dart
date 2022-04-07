@@ -124,7 +124,12 @@ class _BackgroundImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Ink.image(
-      image: NetworkImage(posterPath),
+      image: posterPath.isNotEmpty
+          ? NetworkImage(posterPath)
+          : Image.asset(
+              'assets/images/logo2.png',
+              fit: BoxFit.cover,
+            ).image,
       fit: BoxFit.cover,
       child: BackdropFilter(
         filter: ImageFilter.blur(
@@ -161,7 +166,12 @@ class _Poster extends StatelessWidget {
         borderRadius: BorderRadius.circular(_kRadius),
         image: DecorationImage(
           fit: BoxFit.cover,
-          image: NetworkImage(posterPath),
+          image: posterPath.isNotEmpty
+              ? NetworkImage(posterPath)
+              : Image.asset(
+                  'assets/images/logo2.png',
+                  fit: BoxFit.cover,
+                ).image,
         ),
       ),
     );

@@ -68,24 +68,32 @@ class _MovieScreenState extends State<MovieScreen> {
       appBar: AppBar(
         title: const Text(_kTitle),
       ),
-      body: BlocBuilder<MovieCubit, MovieState>(builder: (context, state) {
-        switch (state.status) {
-          case MovieStatus.loading:
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          case MovieStatus.success:
-            if (state.movies.isEmpty) {
+      body: BlocBuilder<MovieCubit, MovieState>(
+        builder: (context, state) {
+          switch (state.status) {
+            case MovieStatus.error:
+              return Center(
+                child: Text(
+                  _errorText,
+                  style: context.theme.textTheme.headline5!
+                      .copyWith(color: Colors.red),
+                ),
+              );
+
+            case MovieStatus.loading:
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            case MovieStatus.success:
               return GridView.builder(
                 itemBuilder: (BuildContext context, int index) {
-                  final movie = state.movies[index];
                   return index >= state.movies.length
                       ? const BottomLoader()
-                      : _MovieCard(movie: movie);
+                      : _MovieCard(movie: state.movies[index]);
                 },
                 itemCount: state.hasReachedMax
                     ? state.movies.length
-                    : state.movies.length + 1,
+                    : state.movies.length + 2,
                 controller: _controller,
                 padding: const EdgeInsets.all(_kPadding),
                 gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
@@ -95,24 +103,12 @@ class _MovieScreenState extends State<MovieScreen> {
                   childAspectRatio: _childAspectRatio,
                 ),
               );
-            }
-            break;
 
-          case MovieStatus.error:
-            {
-              return Center(
-                child: Text(
-                  _errorText,
-                  style: context.theme.textTheme.headline5!
-                      .copyWith(color: Colors.red),
-                ),
-              );
-            }
-          default:
-            return const SizedBox();
-        }
-        return const SizedBox();
-      }),
+            default:
+              return const SizedBox();
+          }
+        },
+      ),
     );
   }
 }
@@ -137,7 +133,12 @@ class _MovieCard extends StatelessWidget {
           Navigator.push(context, MovieDetailsScreen.route(movie));
         },
         child: Ink.image(
-          image: NetworkImage(movie.posterPath),
+          image: movie.posterPath.isNotEmpty
+              ? NetworkImage(movie.posterPath)
+              : Image.asset(
+                  'assets/images/logo2.png',
+                  fit: BoxFit.cover,
+                ).image,
           fit: BoxFit.cover,
           child: Align(
             alignment: Alignment.bottomCenter,

@@ -11,9 +11,9 @@ class MoviesDTO {
   final int page;
   final List<MovieDTO> results;
   @JsonKey(name: 'total_pages')
-  final int totalResults;
-  @JsonKey(name: 'total_results')
   final int totalPages;
+  @JsonKey(name: 'total_results')
+  final int totalResults;
 
   MoviesDTO({
     required this.page,
@@ -30,9 +30,9 @@ class MoviesDTO {
 
 @JsonSerializable(createToJson: false)
 class MovieDTO {
-  final String title;
+  final String? title;
   @JsonKey(name: 'poster_path')
-  final String posterPath;
+  final String? posterPath;
   final int id;
   @JsonKey(name: 'vote_average')
   final double voteAverage;
@@ -40,7 +40,7 @@ class MovieDTO {
   final bool isAdult;
   @JsonKey(name: 'release_date')
   final String releaseDate;
-  final String overview;
+  final String? overview;
 
   MovieDTO(
     this.title,
@@ -64,8 +64,8 @@ class MovieDTO {
       releaseDate: DateTime.parse(releaseDate),
       overview: overview,
       id: id,
-      posterPath: _appConfig.posterUrl + posterPath,
-      title: title,
+      posterPath: posterPath != null ? _appConfig.posterUrl + posterPath! : '',
+      title: title ?? '-',
     );
   }
 
