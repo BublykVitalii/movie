@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:movie/movie/api/client/movie_api_client.dart';
 import 'package:movie/movie/api/dto/movie_dto.dart';
+import 'package:movie/movie/api/dto/page_dto.dart';
 import 'package:movie/movie/domain/movie.dart';
 import 'package:movie/movie/domain/movie.repository.dart';
 
@@ -13,11 +14,10 @@ class HttpMovieRepository implements MovieRepository {
   @override
   Future<List<Movie>> getNowPlaying(int page) async {
     try {
+      final pageDTO = PageDTO(page: page);
       final response = await _dio.get(
         MovieApiClient.nowPlaying,
-        queryParameters: {
-          'page': page,
-        },
+        queryParameters: pageDTO.toJson(),
       );
       final movieDTO = MoviesDTO.fromJson(response.data);
       return movieDTO.toMovies();

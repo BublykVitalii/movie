@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movie/infrastructure/movie_image.dart';
 
 import 'package:movie/infrastructure/theme/app_colors.dart';
 import 'package:movie/infrastructure/theme/theme_extensions.dart';
@@ -49,7 +50,7 @@ class _MovieScreenState extends State<MovieScreen> {
 
   @override
   void initState() {
-    movieCubit.getNowPlaying(1);
+    movieCubit.getMovies();
     super.initState();
     _controller.addListener(_scrollListener);
   }
@@ -57,7 +58,7 @@ class _MovieScreenState extends State<MovieScreen> {
   void _scrollListener() {
     if (_controller.offset >= _controller.position.maxScrollExtent &&
         !_controller.position.outOfRange) {
-      movieCubit.getNextPage();
+      movieCubit.loadMoreMovies();
     }
   }
 
@@ -66,47 +67,40 @@ class _MovieScreenState extends State<MovieScreen> {
     return Scaffold(
       drawer: const DrawerMenu(),
       appBar: AppBar(
+        centerTitle: true,
         title: const Text(_kTitle),
       ),
       body: BlocBuilder<MovieCubit, MovieState>(
         builder: (context, state) {
-          switch (state.status) {
-            case MovieStatus.error:
-              return Center(
-                child: Text(
-                  _errorText,
-                  style: context.theme.textTheme.headline5!
-                      .copyWith(color: Colors.red),
-                ),
-              );
-
-            case MovieStatus.loading:
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            case MovieStatus.success:
-              return GridView.builder(
-                itemBuilder: (BuildContext context, int index) {
-                  return index >= state.movies.length
-                      ? const BottomLoader()
-                      : _MovieCard(movie: state.movies[index]);
-                },
-                itemCount: state.hasReachedMax
-                    ? state.movies.length
-                    : state.movies.length + 2,
-                controller: _controller,
-                padding: const EdgeInsets.all(_kPadding),
-                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: _maxCrossAxisExtent,
-                  mainAxisSpacing: _kPadding,
-                  crossAxisSpacing: _kPadding,
-                  childAspectRatio: _childAspectRatio,
-                ),
-              );
-
-            default:
-              return const SizedBox();
+          if (state.status == MovieStatus.error) {
+            return Center(
+              child: Text(
+                _errorText,
+                style: context.theme.textTheme.headline5!
+                    .copyWith(color: Colors.red),
+              ),
+            );
+          } else if (state.status == MovieStatus.loading) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
           }
+          return GridView.builder(
+            itemBuilder: (BuildContext context, int index) {
+              return index >= state.movies.length
+                  ? const BottomLoader()
+                  : _MovieCard(movie: state.movies[index]);
+            },
+            itemCount: state.movies.length + 2,
+            controller: _controller,
+            padding: const EdgeInsets.all(_kPadding),
+            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+              maxCrossAxisExtent: _maxCrossAxisExtent,
+              mainAxisSpacing: _kPadding,
+              crossAxisSpacing: _kPadding,
+              childAspectRatio: _childAspectRatio,
+            ),
+          );
         },
       ),
     );
@@ -136,7 +130,7 @@ class _MovieCard extends StatelessWidget {
           image: movie.posterPath.isNotEmpty
               ? NetworkImage(movie.posterPath)
               : Image.asset(
-                  'assets/images/logo2.png',
+                  MovieImage.movieImage,
                   fit: BoxFit.cover,
                 ).image,
           fit: BoxFit.cover,
@@ -190,9 +184,7 @@ class BottomLoader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Center(
-      child: SizedBox(
-        height: 24,
-        width: 24,
+      child: SizedBox.square(
         child: CircularProgressIndicator(
           color: AppColors.darkBlue,
         ),

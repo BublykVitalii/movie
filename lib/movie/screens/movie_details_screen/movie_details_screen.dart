@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 import 'package:movie/config.dart';
+import 'package:movie/infrastructure/movie_image.dart';
 import 'package:movie/infrastructure/theme/app_colors.dart';
 import 'package:movie/infrastructure/theme/theme_extensions.dart';
 import 'package:movie/movie/domain/movie.dart';
@@ -127,7 +128,7 @@ class _BackgroundImage extends StatelessWidget {
       image: posterPath.isNotEmpty
           ? NetworkImage(posterPath)
           : Image.asset(
-              'assets/images/logo2.png',
+              MovieImage.movieImage,
               fit: BoxFit.cover,
             ).image,
       fit: BoxFit.cover,
@@ -169,7 +170,7 @@ class _Poster extends StatelessWidget {
           image: posterPath.isNotEmpty
               ? NetworkImage(posterPath)
               : Image.asset(
-                  'assets/images/logo2.png',
+                  MovieImage.movieImage,
                   fit: BoxFit.cover,
                 ).image,
         ),

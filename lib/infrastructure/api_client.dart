@@ -26,7 +26,6 @@ abstract class DioRegisterModule {
         queryParameters: {
           'api_key': config.apiKey,
           'language': config.language,
-          'page': config.page,
         },
       ),
     )..transformer = FlutterTransformer();
