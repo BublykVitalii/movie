@@ -46,18 +46,19 @@ class MovieScreen extends StatefulWidget {
 class _MovieScreenState extends State<MovieScreen> {
   MovieCubit get movieCubit => BlocProvider.of<MovieCubit>(context);
 
-  final _controller = ScrollController(initialScrollOffset: 50.0);
+  late ScrollController _scrollController;
 
   @override
   void initState() {
+    _scrollController = ScrollController();
     movieCubit.getMovies();
     super.initState();
-    _controller.addListener(_scrollListener);
+    _scrollController.addListener(_scrollListener);
   }
 
   void _scrollListener() {
-    if (_controller.offset >= _controller.position.maxScrollExtent &&
-        !_controller.position.outOfRange) {
+    final triggerFetchMoreSize = 0.9 * _scrollController.position.maxScrollExtent;
+    if (_scrollController.position.pixels > triggerFetchMoreSize) {
       movieCubit.loadMoreMovies();
     }
   }
@@ -76,8 +77,7 @@ class _MovieScreenState extends State<MovieScreen> {
             return Center(
               child: Text(
                 _errorText,
-                style: context.theme.textTheme.headline5!
-                    .copyWith(color: Colors.red),
+                style: context.theme.textTheme.headline5!.copyWith(color: Colors.red),
               ),
             );
           } else if (state.status == MovieStatus.loading) {
@@ -85,14 +85,14 @@ class _MovieScreenState extends State<MovieScreen> {
               child: CircularProgressIndicator(),
             );
           }
+
+          final isLoadMore = state.status == MovieStatus.loadMore;
+          final normalizedItemCount = state.movies.length + (isLoadMore ? 2 : 0);
+
           return GridView.builder(
-            itemBuilder: (BuildContext context, int index) {
-              return index >= state.movies.length
-                  ? const BottomLoader()
-                  : _MovieCard(movie: state.movies[index]);
-            },
-            itemCount: state.movies.length + 2,
-            controller: _controller,
+            itemBuilder: (_, index) => _buildItemCard(index, state.movies),
+            itemCount: normalizedItemCount,
+            controller: _scrollController,
             padding: const EdgeInsets.all(_kPadding),
             gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
               maxCrossAxisExtent: _maxCrossAxisExtent,
@@ -104,6 +104,16 @@ class _MovieScreenState extends State<MovieScreen> {
         },
       ),
     );
+  }
+
+  Widget _buildItemCard(int index, List<Movie> movies) {
+    final isLoadingVisible = index >= movies.length;
+
+    if (isLoadingVisible) {
+      return const BottomLoader();
+    }
+
+    return _MovieCard(movie: movies[index]);
   }
 }
 

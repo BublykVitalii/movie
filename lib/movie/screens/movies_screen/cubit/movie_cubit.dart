@@ -28,6 +28,7 @@ class MovieCubit extends Cubit<MovieState> {
   }
 
   Future<void> loadMoreMovies() async {
+    if (state.status == MovieStatus.loadMore) return;
     emit(state.copyWith(status: MovieStatus.loadMore));
     try {
       final nextPage = state.page + 1;
