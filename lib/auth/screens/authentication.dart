@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
 import 'package:movie/auth/domain/auth_service.dart';
-import 'package:movie/auth/domain/user.dart';
 import 'package:movie/infrastructure/theme/app_colors.dart';
 import 'package:movie/infrastructure/theme/theme_extensions.dart';
 import 'package:movie/movie/screens/movies_screen/movie_screen.dart';
@@ -67,8 +66,8 @@ class _MovieAuthenticationState extends State<MovieAuthentication> {
               const _TopText(),
               const SizedBox(height: _kTop),
               _InputDataWidget(
-                authUser: (user) {
-                  authService.postSessionWithLogin(user);
+                authUser: (username, password) {
+                  authService.postSessionWithLogin(username, password);
                   Navigator.push(context, MovieScreen.route);
                 },
               ),
@@ -112,7 +111,7 @@ class _TopText extends StatelessWidget {
 }
 
 class _InputDataWidget extends StatefulWidget {
-  final ValueChanged<User> authUser;
+  final Function(String username, String password) authUser;
   const _InputDataWidget({
     Key? key,
     required this.authUser,
@@ -143,18 +142,24 @@ class _InputDataWidgetState extends State<_InputDataWidget> {
       child: Column(
         children: [
           TextFormField(
+            // initialValue: 'Rufus_pufus',
             decoration: const InputDecoration(labelText: _kUsername),
-            validator: validate,
-            onChanged: (text) {
-              username = text;
+            validator: (value) => validate(value, _kWrongUsername),
+            onSaved: (text) {
+              setState(() {
+                username = text!;
+              });
             },
           ),
           TextFormField(
+            // initialValue: '07113568bbN',
             controller: _userPasswordController,
             obscureText: !_passwordVisible,
-            validator: validate,
-            onChanged: (text) {
-              password = text;
+            validator: (value) => validate(value, _kWrongPassword),
+            onSaved: (text) {
+              setState(() {
+                password = text!;
+              });
             },
             decoration: InputDecoration(
               labelText: _kPassword,
@@ -185,9 +190,9 @@ class _InputDataWidgetState extends State<_InputDataWidget> {
     );
   }
 
-  String? validate(value) {
+  String? validate(value, errorText) {
     if (value == null || value.isEmpty) {
-      return value;
+      return errorText;
     }
     return null;
   }
@@ -237,7 +242,7 @@ class SignInButton extends StatelessWidget {
       ),
       onPressed: () {
         if (_formKey.currentState!.validate()) {
-          widget.authUser(User(username: username, password: password));
+          widget.authUser(username, password);
         }
       },
     );

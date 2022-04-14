@@ -6,9 +6,13 @@ part 'auth_token_dto.g.dart';
 class AuthTokenDTO {
   @JsonKey(name: 'request_token')
   final String? requestToken;
+  final String? username;
+  final String? password;
 
   AuthTokenDTO({
     required this.requestToken,
+    this.username,
+    this.password,
   });
 
   Map<String, dynamic> toJson() => _$AuthTokenDTOToJson(this);

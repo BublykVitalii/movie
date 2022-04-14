@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:movie/auth/screens/movie_authentication.dart';
+import 'package:movie/auth/screens/authentication.dart';
 import 'package:movie/infrastructure/theme/app_colors.dart';
 import 'package:movie/infrastructure/theme/theme_extensions.dart';
 
