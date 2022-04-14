@@ -14,10 +14,10 @@ class AuthService {
   }
 
   Future<void> postSession() async {
-    final response = await _authRepository.postSession();
+    await _authRepository.postSession();
   }
 
   Future<void> postSessionWithLogin(User user) async {
-    final response = await _authRepository.postSessionWithLogin(user);
+    await _authRepository.postSessionWithLogin(user);
   }
 }

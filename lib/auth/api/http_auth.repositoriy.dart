@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:movie/auth/api/client/auth_api.dart';
 import 'package:movie/auth/api/dto/auth_token_dto.dart';
-import 'package:movie/auth/api/dto/user_dto.dart';
+
 import 'package:movie/auth/domain/auth_repository.dart';
 import 'package:movie/auth/domain/user.dart';
 
@@ -27,7 +27,7 @@ class HttpAuthRepository implements AuthRepository {
     final authTokenDTO = await getToken();
     print(authTokenDTO.requestToken);
     try {
-      final response = await _dio.post(AuthApiClient.session,
+      await _dio.post(AuthApiClient.session,
           data: {"request_token": authTokenDTO.requestToken});
     } on DioError catch (_) {
       rethrow;
@@ -45,7 +45,6 @@ class HttpAuthRepository implements AuthRepository {
         'password': user.password,
       });
       print(response);
-      // TODO:requestToken to shared Preference
     } on DioError catch (_) {
       rethrow;
     }
