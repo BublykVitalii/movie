@@ -11,14 +11,16 @@ MoviesDTO _$MoviesDTOFromJson(Map<String, dynamic> json) => MoviesDTO(
       results: (json['results'] as List<dynamic>)
           .map((e) => MovieDTO.fromJson(e as Map<String, dynamic>))
           .toList(),
+      totalResults: json['total_results'] as int,
+      totalPages: json['total_pages'] as int,
     );
 
 MovieDTO _$MovieDTOFromJson(Map<String, dynamic> json) => MovieDTO(
-      json['title'] as String,
-      json['poster_path'] as String,
+      json['title'] as String?,
+      json['poster_path'] as String?,
       json['id'] as int,
       (json['vote_average'] as num).toDouble(),
       json['adult'] as bool,
-      json['overview'] as String,
+      json['overview'] as String?,
       json['release_date'] as String,
     );

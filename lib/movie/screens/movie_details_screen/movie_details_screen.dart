@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 import 'package:movie/config.dart';
+import 'package:movie/infrastructure/movie_image.dart';
+import 'package:movie/infrastructure/theme/app_colors.dart';
 import 'package:movie/infrastructure/theme/theme_extensions.dart';
 import 'package:movie/movie/domain/movie.dart';
 import 'package:movie/movie/screens/movie_details_screen/cubit/movie_details_cubit.dart';
@@ -69,7 +71,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
 
         Widget content = const Center(
           child: CircularProgressIndicator(
-            backgroundColor: Colors.transparent,
+            backgroundColor: AppColors.darkBlue,
             color: Colors.white,
           ),
         );
@@ -123,7 +125,12 @@ class _BackgroundImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Ink.image(
-      image: NetworkImage(posterPath),
+      image: posterPath.isNotEmpty
+          ? NetworkImage(posterPath)
+          : Image.asset(
+              MovieImage.movieImage,
+              fit: BoxFit.cover,
+            ).image,
       fit: BoxFit.cover,
       child: BackdropFilter(
         filter: ImageFilter.blur(
@@ -160,7 +167,12 @@ class _Poster extends StatelessWidget {
         borderRadius: BorderRadius.circular(_kRadius),
         image: DecorationImage(
           fit: BoxFit.cover,
-          image: NetworkImage(posterPath),
+          image: posterPath.isNotEmpty
+              ? NetworkImage(posterPath)
+              : Image.asset(
+                  MovieImage.movieImage,
+                  fit: BoxFit.cover,
+                ).image,
         ),
       ),
     );

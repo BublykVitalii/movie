@@ -15,8 +15,8 @@ class MovieService {
   Movie? _movie;
   Movie? get movie => _movie;
 
-  Future<List<Movie>?> getNowPlaying() async {
-    _movies = await _movieRepository.getNowPlaying();
+  Future<List<Movie>?> getNowPlaying(int page) async {
+    _movies = await _movieRepository.getNowPlaying(page);
     return _movies;
   }
 
