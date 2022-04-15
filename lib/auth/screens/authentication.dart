@@ -122,12 +122,14 @@ class _InputDataWidget extends StatefulWidget {
 }
 
 class _InputDataWidgetState extends State<_InputDataWidget> {
-  late TextEditingController _userPasswordController;
-  bool _passwordVisible = false;
+  late TextEditingController _usernameController;
+  late TextEditingController _passwordController;
 
+  bool _passwordVisible = false;
   @override
   void initState() {
-    _userPasswordController = TextEditingController();
+    _usernameController = TextEditingController();
+    _passwordController = TextEditingController();
     super.initState();
   }
 
@@ -143,24 +145,25 @@ class _InputDataWidgetState extends State<_InputDataWidget> {
         children: [
           TextFormField(
             // initialValue: 'Rufus_pufus',
+            controller: _usernameController,
             decoration: const InputDecoration(labelText: _kUsername),
             validator: (value) => validate(value, _kWrongUsername),
-            onSaved: (text) {
-              setState(() {
-                username = text!;
-              });
-            },
+            // onSaved: (text) {
+            //   setState(() {
+            //     username = text!;
+            //   });
+            // },
           ),
           TextFormField(
             // initialValue: '07113568bbN',
-            controller: _userPasswordController,
+            controller: _passwordController,
             obscureText: !_passwordVisible,
             validator: (value) => validate(value, _kWrongPassword),
-            onSaved: (text) {
-              setState(() {
-                password = text!;
-              });
-            },
+            // onSaved: (text) {
+            //   setState(() {
+            //     password = text!;
+            //   });
+            // },
             decoration: InputDecoration(
               labelText: _kPassword,
               suffixIcon: IconButton(
@@ -179,10 +182,13 @@ class _InputDataWidgetState extends State<_InputDataWidget> {
           const SizedBox(height: _kTop),
           Center(
             child: SignInButton(
-              formKey: _formKey,
-              widget: widget,
-              username: username,
-              password: password,
+              onPressed: () {
+                print(_usernameController.text);
+                if (_formKey.currentState!.validate()) {
+                  widget.authUser(
+                      _usernameController.text, _passwordController.text);
+                }
+              },
             ),
           ),
         ],
@@ -201,17 +207,10 @@ class _InputDataWidgetState extends State<_InputDataWidget> {
 class SignInButton extends StatelessWidget {
   const SignInButton({
     Key? key,
-    required GlobalKey<FormState> formKey,
-    required this.widget,
-    required this.username,
-    required this.password,
-  })  : _formKey = formKey,
-        super(key: key);
+    required this.onPressed,
+  }) : super(key: key);
 
-  final GlobalKey<FormState> _formKey;
-  final _InputDataWidget widget;
-  final String username;
-  final String password;
+  final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -240,11 +239,7 @@ class SignInButton extends StatelessWidget {
           fontWeight: FontWeight.bold,
         ),
       ),
-      onPressed: () {
-        if (_formKey.currentState!.validate()) {
-          widget.authUser(username, password);
-        }
-      },
+      onPressed: onPressed,
     );
   }
 }

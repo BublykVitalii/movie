@@ -1,5 +1,4 @@
 import 'package:injectable/injectable.dart';
-import 'package:movie/auth/api/dto/auth_token_dto.dart';
 import 'package:movie/auth/domain/auth_repository.dart';
 
 @singleton
