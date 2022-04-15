@@ -11,7 +11,6 @@ import 'package:movie/ui_kit/drawer_menu.dart';
 
 // ---Texts---
 const _kTitle = 'Movie';
-const _errorText = 'Error';
 
 // ---Parameters---
 const double _kPadding = 10.0;
@@ -57,7 +56,8 @@ class _MovieScreenState extends State<MovieScreen> {
   }
 
   void _scrollListener() {
-    final triggerFetchMoreSize = 0.9 * _scrollController.position.maxScrollExtent;
+    final triggerFetchMoreSize =
+        0.9 * _scrollController.position.maxScrollExtent;
     if (_scrollController.position.pixels > triggerFetchMoreSize) {
       movieCubit.loadMoreMovies();
     }
@@ -76,8 +76,9 @@ class _MovieScreenState extends State<MovieScreen> {
           if (state.status == MovieStatus.error) {
             return Center(
               child: Text(
-                _errorText,
-                style: context.theme.textTheme.headline5!.copyWith(color: Colors.red),
+                state.errorMessage!,
+                style: context.theme.textTheme.headline5!
+                    .copyWith(color: Colors.red),
               ),
             );
           } else if (state.status == MovieStatus.loading) {
@@ -87,7 +88,8 @@ class _MovieScreenState extends State<MovieScreen> {
           }
 
           final isLoadMore = state.status == MovieStatus.loadMore;
-          final normalizedItemCount = state.movies.length + (isLoadMore ? 2 : 0);
+          final normalizedItemCount =
+              state.movies.length + (isLoadMore ? 2 : 0);
 
           return GridView.builder(
             itemBuilder: (_, index) => _buildItemCard(index, state.movies),

@@ -19,4 +19,20 @@ class AuthTokenDTO {
 
   factory AuthTokenDTO.fromJson(Map<String, dynamic> json) =>
       _$AuthTokenDTOFromJson(json);
+
+  AuthTokenDTO copyWith({
+    String? requestToken,
+    String? username,
+    String? password,
+  }) {
+    return AuthTokenDTO(
+      requestToken: requestToken ?? this.requestToken,
+      username: username ?? this.username,
+      password: password ?? this.password,
+    );
+  }
+
+  @override
+  String toString() =>
+      'AuthTokenDTO(requestToken: $requestToken, username: $username, password: $password)';
 }

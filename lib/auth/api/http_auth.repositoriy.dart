@@ -15,12 +15,19 @@ class HttpAuthRepository implements AuthRepository {
     try {
       final token = await _dio.get(AuthApiClient.token);
       final authTokenDTO = AuthTokenDTO.fromJson(token.data);
-      await _dio.post(AuthApiClient.sessionWithLogin, data: {
-        "request_token": authTokenDTO.requestToken,
-        'username': username,
-        'password': password,
-      });
-    } on DioError catch (_) {
+      await _dio.post(
+        AuthApiClient.sessionWithLogin,
+        data: authTokenDTO
+            .copyWith(username: username, password: password)
+            .toJson(),
+      );
+    } on DioError catch (error) {
+      if (error.response != null && error.response!.statusCode == 401) {
+        print(error);
+        print(error.response);
+        print(error.message);
+      }
+
       rethrow;
     }
   }

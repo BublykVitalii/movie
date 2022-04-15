@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:movie/auth/screens/authentication.dart';
+import 'package:movie/auth/screens/auth_screen.dart';
 import 'package:movie/infrastructure/theme/app_colors.dart';
 import 'package:movie/infrastructure/theme/theme_extensions.dart';
 
@@ -27,6 +27,6 @@ class _MyAppState extends State<MyApp> {
 
   Route onGenerateRoute(RouteSettings? settings) {
     //return MovieScreen.route;
-    return MovieAuthentication.route;
+    return AuthScreen.route;
   }
 }
