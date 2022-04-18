@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:movie/auth/domain/auth_service.dart';
+import 'package:movie/auth/screens/cubit/auth_cubit.dart';
 import 'package:movie/infrastructure/theme/app_colors.dart';
 import 'package:movie/infrastructure/theme/theme_extensions.dart';
 import 'package:movie/movie/screens/movies_screen/movie_screen.dart';
@@ -20,37 +20,41 @@ const _kWrongPassword = 'Please enter password';
 // ---Parameters---
 const _kPadding = 15.0;
 const _kTop = 60.0;
-
 const _kFontSizeTwo = 18.0;
 
 class AuthScreen extends StatefulWidget {
   static const _routeName = '/authentication';
 
-  const AuthScreen({Key? key}) : super(key: key);
-
   static PageRoute<AuthScreen> get route {
     return MaterialPageRoute(
       settings: const RouteSettings(name: _routeName),
       builder: (context) {
-        return const AuthScreen();
-        // return BlocProvider(
-        //   create: (context) => MovieAuthentication(),
-        //   child: const MovieAuthentication(),
-        // );
+        return BlocProvider(
+          create: (context) => AuthCubit(),
+          child: const AuthScreen(),
+        );
       },
     );
   }
 
+  const AuthScreen({Key? key}) : super(key: key);
   @override
   State<AuthScreen> createState() => _AuthScreenState();
 }
 
 class _AuthScreenState extends State<AuthScreen> {
-  String? username;
-  String? password;
+  String username = '';
+  String password = '';
   bool isPasswordVisible = false;
-  AuthService get authService => GetIt.instance.get<AuthService>();
+  AuthCubit get authCubit => BlocProvider.of<AuthCubit>(context);
+
   final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -59,56 +63,78 @@ class _AuthScreenState extends State<AuthScreen> {
           centerTitle: true,
           title: const Text(_kTitle),
         ),
-        body: Form(
-          key: _formKey,
-          child: Padding(
-            padding: const EdgeInsets.only(
-              left: _kPadding,
-              right: _kPadding,
-            ),
-            child: SingleChildScrollView(
-              reverse: true,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: _kTop),
-                  const WelcomeText(),
-                  const SizedBox(height: _kPadding),
-                  const SignInText(),
-                  const SizedBox(height: _kTop),
-                  _UsernameField(
-                    onSaved: (value) {
-                      username = value;
-                    },
+        body: BlocConsumer<AuthCubit, AuthState>(
+          listener: (context, state) {
+            if (state.status == AuthStatus.success) {
+              Navigator.push(context, MovieScreen.route);
+            }
+          },
+          builder: (context, state) {
+            if (state.status == AuthStatus.error) {
+              return Center(
+                child: Text(
+                  state.errorMessage!,
+                  style: context.theme.textTheme.headline5!
+                      .copyWith(color: Colors.red),
+                ),
+              );
+            } else if (state.status == AuthStatus.loading) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+
+            return Form(
+              key: _formKey,
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  left: _kPadding,
+                  right: _kPadding,
+                ),
+                child: SingleChildScrollView(
+                  reverse: true,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: _kTop),
+                      const WelcomeText(),
+                      const SizedBox(height: _kPadding),
+                      const SignInText(),
+                      const SizedBox(height: _kTop),
+                      _UsernameField(
+                        onSaved: (value) {
+                          username = value ?? '';
+                        },
+                      ),
+                      _PasswordField(
+                        isVisible: isPasswordVisible,
+                        onSaved: (value) {
+                          password = value ?? '';
+                        },
+                        onShow: (value) {
+                          setState(() {
+                            isPasswordVisible = !value;
+                          });
+                        },
+                      ),
+                      const SizedBox(height: _kTop),
+                      Center(
+                        child: SignInButton(
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              _formKey.currentState!.save();
+                              authCubit.postSessionWithLogin(
+                                  username, password);
+                            }
+                          },
+                        ),
+                      ),
+                    ],
                   ),
-                  _PasswordField(
-                    isVisible: isPasswordVisible,
-                    onSaved: (value) {
-                      password = value;
-                    },
-                    onShow: (value) {
-                      setState(() {
-                        isPasswordVisible = !value;
-                      });
-                    },
-                  ),
-                  const SizedBox(height: _kTop),
-                  Center(
-                    child: SignInButton(
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          _formKey.currentState!.save();
-                          authService.postSessionWithLogin(
-                              username!, password!);
-                          Navigator.push(context, MovieScreen.route);
-                        }
-                      },
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ),
-          ),
+            );
+          },
         ),
       ),
     );
@@ -166,8 +192,7 @@ class _UsernameField extends StatelessWidget {
   }
 
   String? _validate(String? value) {
-    if (value == null || value.isEmpty) {
-      // пустые инпуты не валидные
+    if (value == null || value.trim().isEmpty) {
       return _kWrongUsername;
     }
     return null;
@@ -185,14 +210,6 @@ class _PasswordField extends StatelessWidget {
     required this.isVisible,
     required this.onShow,
   }) : super(key: key);
-
-  String? _validate(String? value) {
-    if (value == null || value.isEmpty) {
-      // пустые инпуты не валидные
-      return _kWrongPassword;
-    }
-    return null;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -213,5 +230,12 @@ class _PasswordField extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String? _validate(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return _kWrongPassword;
+    }
+    return null;
   }
 }
