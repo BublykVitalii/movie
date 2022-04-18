@@ -86,51 +86,48 @@ class _AuthScreenState extends State<AuthScreen> {
 
             return Form(
               key: _formKey,
-              child: Padding(
+              child: SingleChildScrollView(
                 padding: const EdgeInsets.only(
                   left: _kPadding,
                   right: _kPadding,
                 ),
-                child: SingleChildScrollView(
-                  reverse: true,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: _kTop),
-                      const WelcomeText(),
-                      const SizedBox(height: _kPadding),
-                      const SignInText(),
-                      const SizedBox(height: _kTop),
-                      _UsernameField(
-                        onSaved: (value) {
-                          username = value ?? '';
+                reverse: true,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: _kTop),
+                    const WelcomeText(),
+                    const SizedBox(height: _kPadding),
+                    const SignInText(),
+                    const SizedBox(height: _kTop),
+                    _UsernameField(
+                      onSaved: (value) {
+                        username = value ?? '';
+                      },
+                    ),
+                    _PasswordField(
+                      isVisible: isPasswordVisible,
+                      onSaved: (value) {
+                        password = value ?? '';
+                      },
+                      onShow: (value) {
+                        setState(() {
+                          isPasswordVisible = !value;
+                        });
+                      },
+                    ),
+                    const SizedBox(height: _kTop),
+                    Center(
+                      child: SignInButton(
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            _formKey.currentState!.save();
+                            authCubit.postSessionWithLogin(username, password);
+                          }
                         },
                       ),
-                      _PasswordField(
-                        isVisible: isPasswordVisible,
-                        onSaved: (value) {
-                          password = value ?? '';
-                        },
-                        onShow: (value) {
-                          setState(() {
-                            isPasswordVisible = !value;
-                          });
-                        },
-                      ),
-                      const SizedBox(height: _kTop),
-                      Center(
-                        child: SignInButton(
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              _formKey.currentState!.save();
-                              authCubit.postSessionWithLogin(
-                                  username, password);
-                            }
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             );
