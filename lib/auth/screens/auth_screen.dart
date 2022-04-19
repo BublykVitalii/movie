@@ -68,17 +68,15 @@ class _AuthScreenState extends State<AuthScreen> {
             if (state.status == AuthStatus.success) {
               Navigator.push(context, MovieScreen.route);
             }
+            if (state.status == AuthStatus.error) {
+              ScaffoldMessenger.of(context).showSnackBar(snackBar(
+                context,
+                state.errorMessage ?? '',
+              ));
+            }
           },
           builder: (context, state) {
-            if (state.status == AuthStatus.error) {
-              return Center(
-                child: Text(
-                  state.errorMessage!,
-                  style: context.theme.textTheme.headline5!
-                      .copyWith(color: Colors.red),
-                ),
-              );
-            } else if (state.status == AuthStatus.loading) {
+            if (state.status == AuthStatus.loading) {
               return const Center(
                 child: CircularProgressIndicator(),
               );
@@ -235,4 +233,19 @@ class _PasswordField extends StatelessWidget {
     }
     return null;
   }
+}
+
+SnackBar snackBar(BuildContext context, String error) {
+  return SnackBar(
+    content: Text(
+      error,
+      style: context.theme.textTheme.subtitle1!.copyWith(color: Colors.white),
+      textAlign: TextAlign.center,
+    ),
+    backgroundColor: AppColors.darkBlue,
+    behavior: SnackBarBehavior.floating,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(_kRadius),
+    ),
+  );
 }
