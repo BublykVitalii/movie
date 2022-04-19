@@ -1,3 +1,3 @@
 abstract class AuthRepository {
-  Future<void> postSessionWithLogin(String? username, String? password);
+  Future<void> sessionWithLogin(String username, String password);
 }

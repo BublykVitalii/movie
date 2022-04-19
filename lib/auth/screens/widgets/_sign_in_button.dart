@@ -7,15 +7,18 @@ const _kSignIn = 'Sign in';
 const _kSizeWidth = 200.0;
 const _kSizeHeight = 40.0;
 const _kRadius = 18.0;
+const _kLoader = 25.0;
+const _kStrokeWidth = 3.0;
 
 class SignInButton extends StatelessWidget {
   const SignInButton({
     Key? key,
     required this.onPressed,
+    this.isLoading = false,
   }) : super(key: key);
 
   final VoidCallback onPressed;
-
+  final bool isLoading;
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
@@ -35,14 +38,20 @@ class SignInButton extends StatelessWidget {
           RoundedRectangleBorder(borderRadius: BorderRadius.circular(_kRadius)),
         ),
       ),
-      child: Text(
-        _kSignIn,
-        style: context.theme.textTheme.bodyText1!.copyWith(
-          fontSize: _kFontSizeTwo,
-          color: AppColors.darkBlue,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
+      child: isLoading
+          ? const SizedBox(
+              width: _kLoader,
+              height: _kLoader,
+              child: CircularProgressIndicator(strokeWidth: _kStrokeWidth),
+            )
+          : Text(
+              _kSignIn,
+              style: context.theme.textTheme.bodyText1!.copyWith(
+                fontSize: _kFontSizeTwo,
+                color: AppColors.darkBlue,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
       onPressed: onPressed,
     );
   }

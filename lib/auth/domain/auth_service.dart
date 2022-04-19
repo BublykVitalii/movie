@@ -6,7 +6,7 @@ class AuthService {
   AuthService(this._authRepository);
   final AuthRepository _authRepository;
 
-  Future<void> postSessionWithLogin(String username, String password) async {
-    await _authRepository.postSessionWithLogin(username, password);
+  Future<void> sessionWithLogin(String username, String password) async {
+    await _authRepository.sessionWithLogin(username, password);
   }
 }

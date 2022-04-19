@@ -43,17 +43,12 @@ class AuthScreen extends StatefulWidget {
 }
 
 class _AuthScreenState extends State<AuthScreen> {
-  String username = '';
-  String password = '';
+  String? username;
+  String? password;
   bool isPasswordVisible = false;
   AuthCubit get authCubit => BlocProvider.of<AuthCubit>(context);
 
   final _formKey = GlobalKey<FormState>();
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,18 +64,17 @@ class _AuthScreenState extends State<AuthScreen> {
               Navigator.push(context, MovieScreen.route);
             }
             if (state.status == AuthStatus.error) {
-              ScaffoldMessenger.of(context).showSnackBar(snackBar(
-                context,
-                state.errorMessage ?? '',
+              ScaffoldMessenger.of(context).showSnackBar(_snackBar(
+                state.errorMessage!,
               ));
             }
           },
           builder: (context, state) {
-            if (state.status == AuthStatus.loading) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
+            // if (state.status == AuthStatus.loading) {
+            //   return const Center(
+            //     child: CircularProgressIndicator(),
+            //   );
+            // }
 
             return Form(
               key: _formKey,
@@ -100,13 +94,13 @@ class _AuthScreenState extends State<AuthScreen> {
                     const SizedBox(height: _kTop),
                     _UsernameField(
                       onSaved: (value) {
-                        username = value ?? '';
+                        username = value;
                       },
                     ),
                     _PasswordField(
                       isVisible: isPasswordVisible,
                       onSaved: (value) {
-                        password = value ?? '';
+                        password = value;
                       },
                       onShow: (value) {
                         setState(() {
@@ -117,12 +111,8 @@ class _AuthScreenState extends State<AuthScreen> {
                     const SizedBox(height: _kTop),
                     Center(
                       child: SignInButton(
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            _formKey.currentState!.save();
-                            authCubit.postSessionWithLogin(username, password);
-                          }
-                        },
+                        onPressed: _onPressedSave,
+                        isLoading: state.status == AuthStatus.loading,
                       ),
                     ),
                   ],
@@ -133,6 +123,28 @@ class _AuthScreenState extends State<AuthScreen> {
         ),
       ),
     );
+  }
+
+  SnackBar _snackBar(String error) {
+    return SnackBar(
+      content: Text(
+        error,
+        style: context.theme.textTheme.subtitle1!.copyWith(color: Colors.white),
+        textAlign: TextAlign.center,
+      ),
+      backgroundColor: AppColors.darkBlue,
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(_kRadius),
+      ),
+    );
+  }
+
+  void _onPressedSave() {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      authCubit.sessionWithLogin(username!, password!);
+    }
   }
 }
 
@@ -233,19 +245,4 @@ class _PasswordField extends StatelessWidget {
     }
     return null;
   }
-}
-
-SnackBar snackBar(BuildContext context, String error) {
-  return SnackBar(
-    content: Text(
-      error,
-      style: context.theme.textTheme.subtitle1!.copyWith(color: Colors.white),
-      textAlign: TextAlign.center,
-    ),
-    backgroundColor: AppColors.darkBlue,
-    behavior: SnackBarBehavior.floating,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(_kRadius),
-    ),
-  );
 }
