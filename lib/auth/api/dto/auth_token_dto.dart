@@ -34,5 +34,5 @@ class AuthTokenDTO {
 
   @override
   String toString() =>
-      'AuthTokenDTO(requestToken: $requestToken, username: $username, password: $password)';
+      'AuthTokenDTO(requestToken: $requestToken, username: $username, password: $password ,)';
 }

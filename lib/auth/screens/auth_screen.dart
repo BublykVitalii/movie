@@ -70,12 +70,6 @@ class _AuthScreenState extends State<AuthScreen> {
             }
           },
           builder: (context, state) {
-            // if (state.status == AuthStatus.loading) {
-            //   return const Center(
-            //     child: CircularProgressIndicator(),
-            //   );
-            // }
-
             return Form(
               key: _formKey,
               child: SingleChildScrollView(
@@ -143,6 +137,7 @@ class _AuthScreenState extends State<AuthScreen> {
   void _onPressedSave() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
+
       authCubit.sessionWithLogin(username!, password!);
     }
   }

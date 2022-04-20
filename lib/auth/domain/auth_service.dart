@@ -9,4 +9,8 @@ class AuthService {
   Future<void> sessionWithLogin(String username, String password) async {
     await _authRepository.sessionWithLogin(username, password);
   }
+
+  Future<bool> inLoggedIn() async {
+    return await _authRepository.inLoggedIn();
+  }
 }
