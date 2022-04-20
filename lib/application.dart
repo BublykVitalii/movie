@@ -33,10 +33,6 @@ class _MyAppState extends State<MyApp> {
   }
 
   Route onGenerateRoute(RouteSettings? settings) {
-    if (widget.inLoggedIn) {
-      return AuthScreen.route;
-    } else {
-      return MovieScreen.route;
-    }
+    return widget.inLoggedIn ? MovieScreen.route : AuthScreen.route;
   }
 }
