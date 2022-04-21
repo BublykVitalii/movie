@@ -136,7 +136,7 @@ class _MovieCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(_kRadius),
       child: InkWell(
         onTap: () {
-          Navigator.push(context, MovieDetailsScreen.route(movie));
+          Navigator.pushReplacement(context, MovieDetailsScreen.route(movie));
         },
         child: Ink.image(
           image: movie.posterPath.isNotEmpty

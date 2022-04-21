@@ -61,7 +61,7 @@ class _AuthScreenState extends State<AuthScreen> {
         body: BlocConsumer<AuthCubit, AuthState>(
           listener: (context, state) {
             if (state.status == AuthStatus.success) {
-              Navigator.push(context, MovieScreen.route);
+              Navigator.pushReplacement(context, MovieScreen.route);
             }
             if (state.status == AuthStatus.error) {
               ScaffoldMessenger.of(context).showSnackBar(_snackBar(
