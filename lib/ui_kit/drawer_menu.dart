@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
+import 'package:movie/auth/domain/auth_service.dart';
 import 'package:movie/auth/screens/auth_screen.dart';
 import 'package:movie/infrastructure/theme/app_colors.dart';
 import 'package:movie/infrastructure/theme/theme_extensions.dart';
-import 'package:movie/utils/store_interaction.dart';
+import 'package:movie/movie_favorite_screen/screen/favorite_screen.dart';
 
 // ---Texts---
 const _kLogOut = 'Log out';
@@ -22,33 +23,48 @@ class DrawerMenu extends StatefulWidget {
 }
 
 class _DrawerMenuState extends State<DrawerMenu> {
-  StoreInteraction get _preference => GetIt.instance.get<StoreInteraction>();
+  final AuthService authService = GetIt.instance.get<AuthService>();
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      child: Column(
+      child: Stack(
         children: [
-          DrawerHeader(
-            decoration: const BoxDecoration(
-              color: AppColors.darkBlue,
-            ),
-            child: Padding(
-              padding: EdgeInsets.zero,
-              child: Image.asset(
-                'assets/images/logo.png',
-                width: double.infinity,
-                scale: _kScale,
+          Column(
+            children: [
+              DrawerHeader(
+                decoration: const BoxDecoration(
+                  color: AppColors.darkBlue,
+                ),
+                child: Image.asset(
+                  'assets/images/logo.png',
+                  width: double.infinity,
+                  scale: _kScale,
+                ),
               ),
-            ),
+              TextButton(
+                onPressed: () {
+                  Navigator.push(context, FavoriteScreen.route);
+                },
+                style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all(Colors.grey.shade200),
+                ),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: Text(
+                    'Favorite movie',
+                    style: context.theme.textTheme.bodyText1!.copyWith(
+                      color: AppColors.darkBlue,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-          Expanded(
-            child: ListView(
-              reverse: true,
-              padding: EdgeInsets.zero,
-              children: [
-                LogOutButton(preference: _preference),
-              ],
-            ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: _LogOutButton(authService: authService),
           ),
         ],
       ),
@@ -56,31 +72,34 @@ class _DrawerMenuState extends State<DrawerMenu> {
   }
 }
 
-class LogOutButton extends StatelessWidget {
-  final StoreInteraction preference;
-  const LogOutButton({
+class _LogOutButton extends StatelessWidget {
+  final AuthService authService;
+  const _LogOutButton({
     Key? key,
-    required this.preference,
+    required this.authService,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 4.0, right: 4.0),
-      child: TextButton(
-        style: ButtonStyle(
-          overlayColor: MaterialStateProperty.all(Colors.white),
-          backgroundColor: MaterialStateProperty.all(AppColors.darkBlue),
-        ),
-        onPressed: () {
-          preference.removeSessionId();
-          Navigator.pushReplacement(context, AuthScreen.route);
-        },
-        child: Text(
-          _kLogOut,
-          style: context.theme.textTheme.bodyText1!.copyWith(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
+    return SizedBox(
+      width: double.infinity,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 4.0, right: 4.0),
+        child: TextButton(
+          style: ButtonStyle(
+            overlayColor: MaterialStateProperty.all(Colors.white),
+            backgroundColor: MaterialStateProperty.all(AppColors.darkBlue),
+          ),
+          onPressed: () {
+            authService.logOut();
+            Navigator.pushReplacement(context, AuthScreen.route);
+          },
+          child: Text(
+            _kLogOut,
+            style: context.theme.textTheme.bodyText1!.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
       ),

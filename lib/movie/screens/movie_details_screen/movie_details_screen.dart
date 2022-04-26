@@ -9,7 +9,9 @@ import 'package:movie/infrastructure/movie_image.dart';
 import 'package:movie/infrastructure/theme/app_colors.dart';
 import 'package:movie/infrastructure/theme/theme_extensions.dart';
 import 'package:movie/movie/domain/movie.dart';
+import 'package:movie/movie/domain/movie_service.dart';
 import 'package:movie/movie/screens/movie_details_screen/cubit/movie_details_cubit.dart';
+import 'package:movie/movie_favorite_screen/domain/account_service.dart';
 import 'package:movie/utils/date_time_formatting_extension.dart';
 
 // ---Texts---
@@ -22,7 +24,7 @@ const _errorText = 'Error';
 const _kPadding = 15.0;
 const _kHeight = 30.0;
 const _kWidth = 20.0;
-const _kFontSize = 22.0;
+
 const _kFontSizeText = 18.0;
 const _kHeightContainer = 280.0;
 const _kWidthContainer = 200.0;
@@ -54,8 +56,10 @@ class MovieDetailsScreen extends StatefulWidget {
 }
 
 class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
+  bool isVisible = false;
   MovieDetailsCubit get movieCubit =>
       BlocProvider.of<MovieDetailsCubit>(context);
+  final MovieService movieService = GetIt.instance.get<MovieService>();
 
   @override
   void initState() {
@@ -82,7 +86,16 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
             children: [
               _InfoRow(movie: movie),
               const SizedBox(height: _kHeight),
-              _TitleText(title: movie.title),
+              _TitleText(
+                movieId: movie.id,
+                isVisible: isVisible,
+                onShow: (value) {
+                  setState(() {
+                    isVisible = !value;
+                  });
+                },
+                title: movie.title,
+              ),
               _Description(overview: movie.overview),
             ],
           );
@@ -274,21 +287,44 @@ class _InfoRowText extends StatelessWidget {
 }
 
 class _TitleText extends StatelessWidget {
+  AccountService get accountService => GetIt.instance.get<AccountService>();
+
+  final bool isVisible;
+  final ValueChanged<bool> onShow;
+  final String title;
+  final int movieId;
+
   const _TitleText({
     Key? key,
+    required this.isVisible,
+    required this.onShow,
     required this.title,
+    required this.movieId,
   }) : super(key: key);
 
-  final String title;
   @override
   Widget build(BuildContext context) {
-    return Text(
-      title,
-      style: context.theme.textTheme.bodyText1!.copyWith(
-        fontSize: _kFontSize,
-        color: Colors.white,
-        fontWeight: FontWeight.bold,
-      ),
+    return Row(
+      children: [
+        Text(
+          title,
+          style: context.theme.textTheme.subtitle1!.copyWith(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        IconButton(
+          color: Colors.white,
+          icon: Icon(
+            !isVisible ? Icons.favorite_border_outlined : Icons.favorite,
+          ),
+          onPressed: () {
+            accountService.getFavorite(movieId);
+
+            onShow(isVisible);
+          },
+        ),
+      ],
     );
   }
 }

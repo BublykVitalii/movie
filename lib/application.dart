@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:movie/auth/screens/auth_screen.dart';
 import 'package:movie/infrastructure/theme/app_colors.dart';
 import 'package:movie/infrastructure/theme/theme_extensions.dart';
 import 'package:movie/movie/screens/movies_screen/movie_screen.dart';
@@ -33,6 +32,8 @@ class _MyAppState extends State<MyApp> {
   }
 
   Route onGenerateRoute(RouteSettings? settings) {
-    return widget.inLoggedIn ? MovieScreen.route : AuthScreen.route;
+    //return FavoriteScreen.route;
+    return MovieScreen.route;
+    //   return widget.inLoggedIn ? MovieScreen.route : AuthScreen.route;
   }
 }

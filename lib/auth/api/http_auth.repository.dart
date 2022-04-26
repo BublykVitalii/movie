@@ -11,8 +11,10 @@ import 'package:movie/utils/store_interaction.dart';
 @Singleton(as: AuthRepository)
 class HttpAuthRepository implements AuthRepository {
   HttpAuthRepository(this._dio, this._preference);
+
   final Dio _dio;
   final StoreInteraction _preference;
+
   @override
   Future<void> sessionWithLogin(String username, String password) async {
     try {
@@ -51,5 +53,10 @@ class HttpAuthRepository implements AuthRepository {
   Future<bool> inLoggedIn() async {
     final sessionId = await _preference.getSessionId();
     return sessionId != null;
+  }
+
+  @override
+  Future<void> logOut() async {
+    await _preference.removeSessionId();
   }
 }

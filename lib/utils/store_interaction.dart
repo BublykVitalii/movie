@@ -18,4 +18,15 @@ class StoreInteraction {
     final preference = await SharedPreferences.getInstance();
     await preference.remove('session_id');
   }
+
+  Future<void> setAccountId(int accountId) async {
+    final preference = await SharedPreferences.getInstance();
+    await preference.setInt('account_id', accountId);
+  }
+
+  Future<int?> getAccountId() async {
+    final preference = await SharedPreferences.getInstance();
+    final int? accountId = preference.getInt('account_id');
+    return accountId;
+  }
 }

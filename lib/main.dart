@@ -10,7 +10,7 @@ void main() async {
   final getIt = GetIt.instance;
 
   await configureDependencies(getIt);
-  AuthService authService = GetIt.instance.get<AuthService>();
+  final AuthService authService = GetIt.instance.get<AuthService>();
   final loggedIn = await authService.inLoggedIn();
 
   runApp(MyApp(inLoggedIn: loggedIn));

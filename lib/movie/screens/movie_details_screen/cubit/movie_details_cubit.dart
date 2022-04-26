@@ -16,6 +16,7 @@ class MovieDetailsCubit extends Cubit<MovieDetailsState> {
     emit(MovieDetailsLoading(movie: movie));
     try {
       final movieDetails = await moviesService.getMovieById(movie.id);
+
       emit(MovieDetailsSuccess(movie: movieDetails!));
     } catch (e) {
       emit(MovieDetailsError(movie: movie));

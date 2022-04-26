@@ -13,4 +13,8 @@ class AuthService {
   Future<bool> inLoggedIn() async {
     return await _authRepository.inLoggedIn();
   }
+
+  Future<void> logOut() async {
+    await _authRepository.logOut();
+  }
 }
