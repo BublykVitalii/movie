@@ -5,6 +5,7 @@ import 'package:movie/movie/api/dto/movie_dto.dart';
 import 'package:movie/movie/api/dto/page_dto.dart';
 import 'package:movie/movie/domain/movie.dart';
 import 'package:movie/movie/domain/movie.repository.dart';
+import 'package:movie/movie/domain/movie_exceptions.dart';
 
 @Singleton(as: MovieRepository)
 class HttpMovieRepository implements MovieRepository {
@@ -21,7 +22,10 @@ class HttpMovieRepository implements MovieRepository {
       );
       final movieDTO = MoviesDTO.fromJson(response.data);
       return movieDTO.toMovies();
-    } on DioError catch (_) {
+    } on DioError catch (error) {
+      if (error.response == null) {
+        throw const NoResultsExceptions();
+      }
       rethrow;
     }
   }

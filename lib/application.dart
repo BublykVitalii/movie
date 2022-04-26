@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
+
+import 'package:movie/auth/screens/auth_screen.dart';
 import 'package:movie/infrastructure/theme/app_colors.dart';
 import 'package:movie/infrastructure/theme/theme_extensions.dart';
 import 'package:movie/movie/screens/movies_screen/movie_screen.dart';
 
 class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
+  final bool inLoggedIn;
+
+  const MyApp({
+    Key? key,
+    required this.inLoggedIn,
+  }) : super(key: key);
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -26,7 +33,6 @@ class _MyAppState extends State<MyApp> {
   }
 
   Route onGenerateRoute(RouteSettings? settings) {
-    return MovieScreen.route;
-    // return MovieAuthentication.route;
+    return widget.inLoggedIn ? MovieScreen.route : AuthScreen.route;
   }
 }
