@@ -306,11 +306,16 @@ class _TitleText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Text(
-          title,
-          style: context.theme.textTheme.subtitle1!.copyWith(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
+        SizedBox(
+          width: 200,
+          child: Text(
+            title,
+            style: context.theme.textTheme.subtitle1!.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
           ),
         ),
         IconButton(
@@ -320,7 +325,6 @@ class _TitleText extends StatelessWidget {
           ),
           onPressed: () {
             accountService.getFavorite(movieId);
-
             onShow(isVisible);
           },
         ),

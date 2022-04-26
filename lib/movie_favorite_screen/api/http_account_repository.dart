@@ -1,5 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
+import 'package:movie/movie/api/dto/movie_dto.dart';
+import 'package:movie/movie/domain/movie.dart';
+import 'package:movie/movie/domain/movie_exceptions.dart';
 import 'package:movie/movie_favorite_screen/api/client/account_api.dart';
 
 import 'package:movie/movie_favorite_screen/api/dto/account_id_dto.dart';
@@ -40,6 +43,8 @@ class HttpAccountRepository implements AccountRepository {
       final sessionId = await _preference.getSessionId();
       await _dio.post(AccountApi.getFavorite(accountId!), queryParameters: {
         'session_id': sessionId,
+        "media_type": "movie",
+        "favorite": true
       }, data: {
         "media_id": movieId,
       });
@@ -49,16 +54,22 @@ class HttpAccountRepository implements AccountRepository {
   }
 
   @override
-  Future<void> getListFavorite() async {
+  Future<List<Movie>> getListFavorite() async {
     try {
       final accountId = await _preference.getAccountId();
       final sessionId = await _preference.getSessionId();
-      await _dio.post(
-        AccountApi.getFavorite(accountId!),
+      final response = await _dio.get(
+        AccountApi.getListFavorite(accountId!),
         queryParameters: {'session_id': sessionId},
       );
-    } catch (e) {
-      return;
+
+      final movieDTO = MoviesDTO.fromJson(response.data);
+      return movieDTO.toMovies();
+    } on DioError catch (error) {
+      if (error.response == null) {
+        throw const NoResultsExceptions();
+      }
+      rethrow;
     }
   }
 }

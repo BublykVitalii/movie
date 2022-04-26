@@ -5,6 +5,7 @@ import 'package:movie/auth/domain/auth_service.dart';
 import 'package:movie/auth/screens/auth_screen.dart';
 import 'package:movie/infrastructure/theme/app_colors.dart';
 import 'package:movie/infrastructure/theme/theme_extensions.dart';
+import 'package:movie/movie/screens/movies_screen/movie_screen.dart';
 import 'package:movie/movie_favorite_screen/screen/favorite_screen.dart';
 
 // ---Texts---
@@ -44,7 +45,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
               ),
               TextButton(
                 onPressed: () {
-                  Navigator.push(context, FavoriteScreen.route);
+                  Navigator.pushReplacement(context, FavoriteScreen.route());
                 },
                 style: ButtonStyle(
                   backgroundColor:
@@ -54,6 +55,24 @@ class _DrawerMenuState extends State<DrawerMenu> {
                   width: double.infinity,
                   child: Text(
                     'Favorite movie',
+                    style: context.theme.textTheme.bodyText1!.copyWith(
+                      color: AppColors.darkBlue,
+                    ),
+                  ),
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pushReplacement(context, MovieScreen.route);
+                },
+                style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all(Colors.grey.shade200),
+                ),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: Text(
+                    'Movie',
                     style: context.theme.textTheme.bodyText1!.copyWith(
                       color: AppColors.darkBlue,
                     ),
