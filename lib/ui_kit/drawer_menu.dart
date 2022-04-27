@@ -11,9 +11,13 @@ import 'package:movie/movie_favorite_screen/screen/favorite_screen.dart';
 
 // ---Texts---
 const _kLogOut = 'Log out';
+const _kFavoriteMovie = 'Favorite movie';
+const _kMovie = 'Movie';
 
 // ---Parameters---
 const _kScale = 1.2;
+const _kPadding = 4.0;
+const _kRadius = 6.0;
 
 class DrawerMenu extends StatefulWidget {
   const DrawerMenu({
@@ -30,6 +34,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
   @override
   Widget build(BuildContext context) {
     return Drawer(
+      backgroundColor: Colors.white,
       child: Stack(
         children: [
           Column(
@@ -44,38 +49,60 @@ class _DrawerMenuState extends State<DrawerMenu> {
                   scale: _kScale,
                 ),
               ),
-              TextButton(
-                onPressed: () {
-                  Navigator.pushReplacement(context, FavoriteScreen.route());
-                },
-                style: ButtonStyle(
-                  backgroundColor:
-                      MaterialStateProperty.all(Colors.grey.shade200),
+              Padding(
+                padding: const EdgeInsets.only(
+                  left: _kPadding,
+                  right: _kPadding,
                 ),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: Text(
-                    'Favorite movie',
-                    style: context.theme.textTheme.bodyText1!.copyWith(
-                      color: AppColors.darkBlue,
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.pushReplacement(context, FavoriteScreen.route());
+                  },
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all(AppColors.darkBlue),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(_kRadius),
+                      ),
+                    ),
+                  ),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: Text(
+                      _kFavoriteMovie,
+                      style: context.theme.textTheme.bodyText1!.copyWith(
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ),
               ),
-              TextButton(
-                onPressed: () {
-                  Navigator.pushReplacement(context, MovieScreen.route);
-                },
-                style: ButtonStyle(
-                  backgroundColor:
-                      MaterialStateProperty.all(Colors.grey.shade200),
+              Padding(
+                padding: const EdgeInsets.only(
+                  left: _kPadding,
+                  right: _kPadding,
                 ),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: Text(
-                    'Movie',
-                    style: context.theme.textTheme.bodyText1!.copyWith(
-                      color: AppColors.darkBlue,
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.pushReplacement(context, MovieScreen.route);
+                  },
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all(AppColors.darkBlue),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(_kRadius),
+                      ),
+                    ),
+                  ),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: Text(
+                      _kMovie,
+                      style: context.theme.textTheme.bodyText1!.copyWith(
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ),
@@ -104,7 +131,7 @@ class _LogOutButton extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       child: Padding(
-        padding: const EdgeInsets.only(left: 4.0, right: 4.0),
+        padding: const EdgeInsets.only(left: _kPadding, right: _kPadding),
         child: TextButton(
           style: ButtonStyle(
             overlayColor: MaterialStateProperty.all(Colors.white),
