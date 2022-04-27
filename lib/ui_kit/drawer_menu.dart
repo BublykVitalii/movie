@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 
 import 'package:movie/auth/domain/auth_service.dart';
 import 'package:movie/auth/screens/auth_screen.dart';
+import 'package:movie/infrastructure/movie_image.dart';
 import 'package:movie/infrastructure/theme/app_colors.dart';
 import 'package:movie/infrastructure/theme/theme_extensions.dart';
 import 'package:movie/movie/screens/movies_screen/movie_screen.dart';
@@ -38,7 +39,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
                   color: AppColors.darkBlue,
                 ),
                 child: Image.asset(
-                  'assets/images/logo.png',
+                  MovieImage.logoImage,
                   width: double.infinity,
                   scale: _kScale,
                 ),

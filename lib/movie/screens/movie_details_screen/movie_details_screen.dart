@@ -11,7 +11,7 @@ import 'package:movie/infrastructure/theme/theme_extensions.dart';
 import 'package:movie/movie/domain/movie.dart';
 import 'package:movie/movie/domain/movie_service.dart';
 import 'package:movie/movie/screens/movie_details_screen/cubit/movie_details_cubit.dart';
-import 'package:movie/movie_favorite_screen/domain/account_service.dart';
+import 'package:movie/movie_favorite_screen/domain/favorite_service.dart';
 import 'package:movie/utils/date_time_formatting_extension.dart';
 
 // ---Texts---
@@ -287,7 +287,7 @@ class _InfoRowText extends StatelessWidget {
 }
 
 class _TitleText extends StatelessWidget {
-  AccountService get accountService => GetIt.instance.get<AccountService>();
+  FavoriteService get favoriteService => GetIt.instance.get<FavoriteService>();
 
   final bool isVisible;
   final ValueChanged<bool> onShow;
@@ -326,7 +326,7 @@ class _TitleText extends StatelessWidget {
                   !isVisible ? Icons.favorite_border_outlined : Icons.favorite,
                 ),
                 onPressed: () {
-                  accountService.getFavorite(movieId);
+                  favoriteService.markAsFavorite(movieId);
                   onShow(isVisible);
                 },
               ),
