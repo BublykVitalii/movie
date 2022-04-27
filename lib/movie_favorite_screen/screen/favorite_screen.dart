@@ -4,11 +4,22 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movie/infrastructure/movie_image.dart';
 import 'package:movie/infrastructure/theme/app_colors.dart';
 import 'package:movie/infrastructure/theme/theme_extensions.dart';
-import 'package:movie/movie_favorite_screen/cubit/favorite_cubit.dart';
+import 'package:movie/movie/domain/movie.dart';
+import 'package:movie/movie/screens/movie_details_screen/movie_details_screen.dart';
+import 'package:movie/movie_favorite_screen/screen/cubit/favorite_cubit.dart';
 import 'package:movie/ui_kit/drawer_menu.dart';
 
 // ---Texts---
 const _kTitle = 'Favorite Movie';
+
+// ---Parameters---
+const _kLeft = 4.0;
+const _kTop = 10.0;
+const _kHeight = 200.0;
+const _kWidth = 140.0;
+const _kCircular = 20.0;
+const _kPaddingAll = 8.0;
+const _kMaxLines = 2;
 
 class FavoriteScreen extends StatefulWidget {
   static const _routeName = '/favorite-screen';
@@ -60,24 +71,23 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
               );
             }
             if (state is FavoriteSuccess) {
-              return Padding(
+              return ListView.separated(
                 padding: const EdgeInsets.only(
-                  left: 6.0,
-                  top: 10,
+                  left: _kLeft,
+                  top: _kTop,
                 ),
-                child: ListView.separated(
-                  separatorBuilder: (BuildContext context, int index) =>
-                      const Divider(),
-                  itemCount: state.listMovies.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    final movie = state.listMovies[index];
-                    return MovieCard(
-                      title: movie.title,
-                      overview: movie.overview,
-                      posterPath: movie.posterPath,
-                    );
-                  },
-                ),
+                separatorBuilder: (BuildContext context, int index) =>
+                    const Divider(),
+                itemCount: state.listMovies.length,
+                itemBuilder: (BuildContext context, int index) {
+                  final movie = state.listMovies[index];
+                  return MovieCard(
+                    movie: movie,
+                    title: movie.title,
+                    overview: movie.overview,
+                    posterPath: movie.posterPath,
+                  );
+                },
               );
             }
             return const SizedBox();
@@ -89,11 +99,13 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
 }
 
 class MovieCard extends StatelessWidget {
+  final Movie movie;
   final String title;
   final String? overview;
   final String posterPath;
   const MovieCard({
     Key? key,
+    required this.movie,
     required this.title,
     required this.overview,
     required this.posterPath,
@@ -101,56 +113,64 @@ class MovieCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          height: 200,
-          width: 140,
-          child: Ink.image(
-            image: posterPath.isNotEmpty
-                ? NetworkImage(posterPath)
-                : Image.asset(
-                    MovieImage.movieImage,
-                    fit: BoxFit.cover,
-                  ).image,
+    return InkWell(
+      onTap: () {
+        Navigator.push(context, MovieDetailsScreen.route(movie));
+      },
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            height: _kHeight,
+            width: _kWidth,
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Colors.white,
+              ),
+              borderRadius: BorderRadius.circular(_kCircular),
+              image: DecorationImage(
+                fit: BoxFit.cover,
+                image: posterPath.isNotEmpty
+                    ? NetworkImage(posterPath)
+                    : Image.asset(
+                        MovieImage.movieImage,
+                        fit: BoxFit.cover,
+                      ).image,
+              ),
+            ),
           ),
-        ),
-        Column(
-          children: [
-            SizedBox(
-              width: 200,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Text(
-                  title,
-                  style: context.theme.textTheme.subtitle1!.copyWith(
-                    color: AppColors.darkBlue,
-                    fontWeight: FontWeight.bold,
+          Expanded(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(_kPaddingAll),
+                  child: Text(
+                    title,
+                    style: context.theme.textTheme.subtitle1!.copyWith(
+                      color: AppColors.darkBlue,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: _kMaxLines,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
                 ),
-              ),
-            ),
-            SizedBox(
-              width: 220,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  overview!,
-                  style: context.theme.textTheme.subtitle1!.copyWith(
-                    color: AppColors.darkBlue,
-                    fontWeight: FontWeight.normal,
+                Padding(
+                  padding: const EdgeInsets.all(_kPaddingAll),
+                  child: Text(
+                    overview!,
+                    style: context.theme.textTheme.subtitle1!.copyWith(
+                      color: AppColors.darkBlue,
+                      fontWeight: FontWeight.normal,
+                    ),
+                    maxLines: 7,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  maxLines: 8,
-                  overflow: TextOverflow.ellipsis,
                 ),
-              ),
+              ],
             ),
-          ],
-        ),
-      ],
+          ),
+        ],
+      ),
     );
   }
 }

@@ -56,6 +56,7 @@ class HttpAccountRepository implements AccountRepository {
   @override
   Future<List<Movie>> getListFavorite() async {
     try {
+      await getAccountId();
       final accountId = await _preference.getAccountId();
       final sessionId = await _preference.getSessionId();
       final response = await _dio.get(

@@ -306,28 +306,33 @@ class _TitleText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        SizedBox(
-          width: 200,
-          child: Text(
-            title,
-            style: context.theme.textTheme.subtitle1!.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
+        Expanded(
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  title,
+                  style: context.theme.textTheme.subtitle1!.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              IconButton(
+                color: Colors.white,
+                icon: Icon(
+                  !isVisible ? Icons.favorite_border_outlined : Icons.favorite,
+                ),
+                onPressed: () {
+                  accountService.getFavorite(movieId);
+                  onShow(isVisible);
+                },
+              ),
+            ],
           ),
-        ),
-        IconButton(
-          color: Colors.white,
-          icon: Icon(
-            !isVisible ? Icons.favorite_border_outlined : Icons.favorite,
-          ),
-          onPressed: () {
-            accountService.getFavorite(movieId);
-            onShow(isVisible);
-          },
-        ),
+        )
       ],
     );
   }
