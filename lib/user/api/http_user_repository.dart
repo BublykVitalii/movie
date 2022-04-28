@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:movie/user/api/client/user_api.dart';
 import 'package:movie/user/api/dto/user_dto.dart';
+import 'package:movie/user/domain/user.dart';
 import 'package:movie/user/domain/user_repository.dart';
 import 'package:movie/utils/store_interaction.dart';
 
@@ -16,7 +17,7 @@ class HttpUserRepository implements UserRepository {
   final StoreInteraction _preference;
 
   @override
-  Future<void> getAccountId() async {
+  Future<User> getAccountId() async {
     try {
       final sessionId = await _preference.getSessionId();
       final response = await _dio.get(
@@ -27,8 +28,10 @@ class HttpUserRepository implements UserRepository {
       );
       final accountIdDTO = UserDTO.fromJson(response.data);
       _preference.setAccountId(accountIdDTO.id);
-    } catch (_) {
-      return;
+      final userDTO = UserDTO.fromJson(response.data);
+      return userDTO.toUser();
+    } on DioError catch (_) {
+      rethrow;
     }
   }
 }

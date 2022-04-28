@@ -1,8 +1,8 @@
-class WrongAuthException implements Exception {
-  const WrongAuthException();
+class WrongAuthFailedException implements Exception {
+  const WrongAuthFailedException();
   @override
   String toString() {
-    return 'Wrong login or password';
+    return 'Authentication failed';
   }
 }
 

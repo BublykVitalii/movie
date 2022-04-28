@@ -24,7 +24,7 @@ const _kMaxLines = 2;
 class FavoriteScreen extends StatefulWidget {
   static const _routeName = '/favorite-screen';
 
-  static PageRoute<FavoriteScreen> route() {
+  static PageRoute<FavoriteScreen> get route {
     return MaterialPageRoute(
       settings: const RouteSettings(name: _routeName),
       builder: (context) {

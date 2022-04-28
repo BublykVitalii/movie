@@ -55,10 +55,10 @@ class _DrawerMenuState extends State<DrawerMenu> {
                   right: _kPadding,
                 ),
                 child: TextButton(
-                  onPressed: () {
-                    Navigator.pushReplacement(context, FavoriteScreen.route());
-                  },
+                  onPressed: () => _onTapDrawer(FavoriteScreen.route),
                   style: ButtonStyle(
+                    overlayColor:
+                        MaterialStateProperty.all(Colors.grey.shade400),
                     backgroundColor:
                         MaterialStateProperty.all(AppColors.darkBlue),
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -84,10 +84,10 @@ class _DrawerMenuState extends State<DrawerMenu> {
                   right: _kPadding,
                 ),
                 child: TextButton(
-                  onPressed: () {
-                    Navigator.pushReplacement(context, MovieScreen.route);
-                  },
+                  onPressed: () => _onTapDrawer(MovieScreen.route),
                   style: ButtonStyle(
+                    overlayColor:
+                        MaterialStateProperty.all(Colors.grey.shade400),
                     backgroundColor:
                         MaterialStateProperty.all(AppColors.darkBlue),
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -117,6 +117,18 @@ class _DrawerMenuState extends State<DrawerMenu> {
       ),
     );
   }
+
+  void _onTapDrawer(PageRoute route) {
+    final currentRoute = ModalRoute.of(context);
+
+    if (currentRoute?.settings.name != route.settings.name) {
+      Navigator.of(context)
+        ..pop()
+        ..pushAndRemoveUntil<void>(route, (route) => false);
+    } else {
+      Navigator.of(context).pop();
+    }
+  }
 }
 
 class _LogOutButton extends StatelessWidget {
@@ -134,7 +146,7 @@ class _LogOutButton extends StatelessWidget {
         padding: const EdgeInsets.only(left: _kPadding, right: _kPadding),
         child: TextButton(
           style: ButtonStyle(
-            overlayColor: MaterialStateProperty.all(Colors.white),
+            overlayColor: MaterialStateProperty.all(Colors.grey.shade400),
             backgroundColor: MaterialStateProperty.all(AppColors.darkBlue),
           ),
           onPressed: () {
