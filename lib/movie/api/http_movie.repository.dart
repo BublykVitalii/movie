@@ -43,4 +43,58 @@ class HttpMovieRepository implements MovieRepository {
       rethrow;
     }
   }
+
+  @override
+  Future<List<Movie>> getPopular(int page) async {
+    try {
+      final pageDTO = PageDTO(page: page);
+      final response = await _dio.get(
+        MovieApiClient.popular,
+        queryParameters: pageDTO.toJson(),
+      );
+      final movieDTO = MoviesDTO.fromJson(response.data);
+      return movieDTO.toMovies();
+    } on DioError catch (error) {
+      if (error.response == null) {
+        throw const NoResultsExceptions();
+      }
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<Movie>> getTopRated(int page) async {
+    try {
+      final pageDTO = PageDTO(page: page);
+      final response = await _dio.get(
+        MovieApiClient.topRated,
+        queryParameters: pageDTO.toJson(),
+      );
+      final movieDTO = MoviesDTO.fromJson(response.data);
+      return movieDTO.toMovies();
+    } on DioError catch (error) {
+      if (error.response == null) {
+        throw const NoResultsExceptions();
+      }
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<Movie>> getUpcoming(int page) async {
+    try {
+      final pageDTO = PageDTO(page: page);
+      final response = await _dio.get(
+        MovieApiClient.upcoming,
+        queryParameters: pageDTO.toJson(),
+      );
+      final movieDTO = MoviesDTO.fromJson(response.data);
+      return movieDTO.toMovies();
+    } on DioError catch (error) {
+      if (error.response == null) {
+        throw const NoResultsExceptions();
+      }
+      rethrow;
+    }
+  }
 }

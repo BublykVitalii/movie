@@ -24,7 +24,7 @@ const _kMaxLines = 2;
 class FavoriteScreen extends StatefulWidget {
   static const _routeName = '/favorite-screen';
 
-  static PageRoute<FavoriteScreen> get route {
+  static PageRoute<FavoriteScreen> route() {
     return MaterialPageRoute(
       settings: const RouteSettings(name: _routeName),
       builder: (context) {
@@ -62,7 +62,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
       body: SafeArea(
         child: BlocBuilder<FavoriteCubit, FavoriteState>(
           builder: (context, state) {
-            if (state is FavoriteLoading) {
+            if (state.status == FavoriteStatus.loading) {
               return const Center(
                 child: CircularProgressIndicator(
                   backgroundColor: AppColors.darkBlue,
@@ -70,7 +70,8 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                 ),
               );
             }
-            if (state is FavoriteSuccess) {
+
+            if (state.status == FavoriteStatus.success) {
               return ListView.separated(
                 padding: const EdgeInsets.only(
                   left: _kLeft,
@@ -78,9 +79,9 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                 ),
                 separatorBuilder: (BuildContext context, int index) =>
                     const Divider(),
-                itemCount: state.listMovies.length,
+                itemCount: state.listMovies!.length,
                 itemBuilder: (BuildContext context, int index) {
-                  final movie = state.listMovies[index];
+                  final movie = state.listMovies![index];
                   return MovieCard(
                     movie: movie,
                     title: movie.title,

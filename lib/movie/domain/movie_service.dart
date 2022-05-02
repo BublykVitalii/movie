@@ -24,4 +24,19 @@ class MovieService {
     _movie = await _movieRepository.getMovieById(id);
     return _movie;
   }
+
+  Future<List<Movie>?> getPopular(int page) async {
+    _movies = await _movieRepository.getPopular(page);
+    return _movies;
+  }
+
+  Future<List<Movie>?> getTopRated(int page) async {
+    _movies = await _movieRepository.getTopRated(page);
+    return _movies;
+  }
+
+  Future<List<Movie>?> getUpcoming(int page) async {
+    _movies = await _movieRepository.getUpcoming(page);
+    return _movies;
+  }
 }

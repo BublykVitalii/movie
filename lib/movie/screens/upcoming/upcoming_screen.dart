@@ -6,14 +6,14 @@ import 'package:movie/infrastructure/theme/app_colors.dart';
 import 'package:movie/infrastructure/theme/theme_extensions.dart';
 import 'package:movie/movie/domain/movie.dart';
 import 'package:movie/movie/screens/movie_details_screen/movie_details_screen.dart';
-import 'package:movie/movie/screens/movies_screen/cubit/movie_cubit.dart';
+import 'package:movie/movie/screens/movies_screen/movie_screen.dart';
 import 'package:movie/movie/screens/popular/popular_screen.dart';
 import 'package:movie/movie/screens/top_rated/top_rated_screen.dart';
-import 'package:movie/movie/screens/upcoming/upcoming_screen.dart';
+import 'package:movie/movie/screens/upcoming/cubit/upcoming_cubit.dart';
 import 'package:movie/ui_kit/drawer_menu.dart';
 
 // ---Texts---
-const _kTitle = 'Movie';
+const _kTitle = 'Upcoming';
 
 // ---Parameters---
 const double _kPadding = 10.0;
@@ -24,36 +24,36 @@ const double _maxCrossAxisExtent = 300;
 const double _childAspectRatio = 2 / 3;
 const double _kPaddingLeftRight = 20;
 
-class MovieScreen extends StatefulWidget {
-  static const _routeName = '/movie-screen';
+class UpcomingScreen extends StatefulWidget {
+  static const _routeName = '/upcoming-screen';
 
-  static PageRoute<MovieScreen> get route {
+  static PageRoute<UpcomingScreen> get route {
     return MaterialPageRoute(
       settings: const RouteSettings(name: _routeName),
       builder: (context) {
         return BlocProvider(
-          create: (context) => MovieCubit(),
-          child: const MovieScreen(),
+          create: (context) => UpcomingCubit(),
+          child: const UpcomingScreen(),
         );
       },
     );
   }
 
-  const MovieScreen({Key? key}) : super(key: key);
+  const UpcomingScreen({Key? key}) : super(key: key);
 
   @override
-  State<MovieScreen> createState() => _MovieScreenState();
+  State<UpcomingScreen> createState() => _UpcomingScreenState();
 }
 
-class _MovieScreenState extends State<MovieScreen> {
-  MovieCubit get movieCubit => BlocProvider.of<MovieCubit>(context);
+class _UpcomingScreenState extends State<UpcomingScreen> {
+  UpcomingCubit get upcomingCubit => BlocProvider.of<UpcomingCubit>(context);
 
   late ScrollController _scrollController;
 
   @override
   void initState() {
     _scrollController = ScrollController();
-    movieCubit.getMovies();
+    upcomingCubit.getUpcoming();
     super.initState();
     _scrollController.addListener(_scrollListener);
   }
@@ -62,7 +62,7 @@ class _MovieScreenState extends State<MovieScreen> {
     final triggerFetchMoreSize =
         0.9 * _scrollController.position.maxScrollExtent;
     if (_scrollController.position.pixels > triggerFetchMoreSize) {
-      movieCubit.loadMoreMovies();
+      upcomingCubit.loadMoreUpcomingMovies();
     }
   }
 
@@ -77,9 +77,9 @@ class _MovieScreenState extends State<MovieScreen> {
         centerTitle: true,
         title: const Text(_kTitle),
       ),
-      body: BlocBuilder<MovieCubit, MovieState>(
+      body: BlocBuilder<UpcomingCubit, UpcomingState>(
         builder: (context, state) {
-          if (state.status == MovieStatus.error) {
+          if (state.status == UpcomingStatus.error) {
             return Center(
               child: Text(
                 state.errorMessage!,
@@ -87,13 +87,13 @@ class _MovieScreenState extends State<MovieScreen> {
                     .copyWith(color: Colors.red),
               ),
             );
-          } else if (state.status == MovieStatus.loading) {
+          } else if (state.status == UpcomingStatus.loading) {
             return const Center(
               child: CircularProgressIndicator(),
             );
           }
 
-          final isLoadMore = state.status == MovieStatus.loadMore;
+          final isLoadMore = state.status == UpcomingStatus.loadMore;
           final normalizedItemCount =
               state.movies.length + (isLoadMore ? 2 : 0);
 

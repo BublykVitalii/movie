@@ -6,14 +6,14 @@ import 'package:movie/infrastructure/theme/app_colors.dart';
 import 'package:movie/infrastructure/theme/theme_extensions.dart';
 import 'package:movie/movie/domain/movie.dart';
 import 'package:movie/movie/screens/movie_details_screen/movie_details_screen.dart';
-import 'package:movie/movie/screens/movies_screen/cubit/movie_cubit.dart';
-import 'package:movie/movie/screens/popular/popular_screen.dart';
+import 'package:movie/movie/screens/movies_screen/movie_screen.dart';
+import 'package:movie/movie/screens/popular/cubit/popular_cubit.dart';
 import 'package:movie/movie/screens/top_rated/top_rated_screen.dart';
 import 'package:movie/movie/screens/upcoming/upcoming_screen.dart';
 import 'package:movie/ui_kit/drawer_menu.dart';
 
 // ---Texts---
-const _kTitle = 'Movie';
+const _kTitle = 'Popular';
 
 // ---Parameters---
 const double _kPadding = 10.0;
@@ -24,36 +24,36 @@ const double _maxCrossAxisExtent = 300;
 const double _childAspectRatio = 2 / 3;
 const double _kPaddingLeftRight = 20;
 
-class MovieScreen extends StatefulWidget {
-  static const _routeName = '/movie-screen';
+class PopularScreen extends StatefulWidget {
+  static const _routeName = '/popular-screen';
 
-  static PageRoute<MovieScreen> get route {
+  static PageRoute<PopularScreen> get route {
     return MaterialPageRoute(
       settings: const RouteSettings(name: _routeName),
       builder: (context) {
         return BlocProvider(
-          create: (context) => MovieCubit(),
-          child: const MovieScreen(),
+          create: (context) => TopRatedCubit(),
+          child: const PopularScreen(),
         );
       },
     );
   }
 
-  const MovieScreen({Key? key}) : super(key: key);
+  const PopularScreen({Key? key}) : super(key: key);
 
   @override
-  State<MovieScreen> createState() => _MovieScreenState();
+  State<PopularScreen> createState() => _PopularScreenState();
 }
 
-class _MovieScreenState extends State<MovieScreen> {
-  MovieCubit get movieCubit => BlocProvider.of<MovieCubit>(context);
+class _PopularScreenState extends State<PopularScreen> {
+  TopRatedCubit get popularCubit => BlocProvider.of<TopRatedCubit>(context);
 
   late ScrollController _scrollController;
 
   @override
   void initState() {
     _scrollController = ScrollController();
-    movieCubit.getMovies();
+    popularCubit.getPopular();
     super.initState();
     _scrollController.addListener(_scrollListener);
   }
@@ -62,7 +62,7 @@ class _MovieScreenState extends State<MovieScreen> {
     final triggerFetchMoreSize =
         0.9 * _scrollController.position.maxScrollExtent;
     if (_scrollController.position.pixels > triggerFetchMoreSize) {
-      movieCubit.loadMoreMovies();
+      popularCubit.loadMorePopularMovies();
     }
   }
 
@@ -77,9 +77,9 @@ class _MovieScreenState extends State<MovieScreen> {
         centerTitle: true,
         title: const Text(_kTitle),
       ),
-      body: BlocBuilder<MovieCubit, MovieState>(
+      body: BlocBuilder<TopRatedCubit, PopularState>(
         builder: (context, state) {
-          if (state.status == MovieStatus.error) {
+          if (state.status == PopularStatus.error) {
             return Center(
               child: Text(
                 state.errorMessage!,
@@ -87,13 +87,13 @@ class _MovieScreenState extends State<MovieScreen> {
                     .copyWith(color: Colors.red),
               ),
             );
-          } else if (state.status == MovieStatus.loading) {
+          } else if (state.status == PopularStatus.loading) {
             return const Center(
               child: CircularProgressIndicator(),
             );
           }
 
-          final isLoadMore = state.status == MovieStatus.loadMore;
+          final isLoadMore = state.status == PopularStatus.loadMore;
           final normalizedItemCount =
               state.movies.length + (isLoadMore ? 2 : 0);
 

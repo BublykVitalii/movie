@@ -6,14 +6,15 @@ import 'package:movie/infrastructure/theme/app_colors.dart';
 import 'package:movie/infrastructure/theme/theme_extensions.dart';
 import 'package:movie/movie/domain/movie.dart';
 import 'package:movie/movie/screens/movie_details_screen/movie_details_screen.dart';
-import 'package:movie/movie/screens/movies_screen/cubit/movie_cubit.dart';
+import 'package:movie/movie/screens/movies_screen/movie_screen.dart';
 import 'package:movie/movie/screens/popular/popular_screen.dart';
-import 'package:movie/movie/screens/top_rated/top_rated_screen.dart';
+import 'package:movie/movie/screens/top_rated/cubit/top_rated_cubit.dart';
 import 'package:movie/movie/screens/upcoming/upcoming_screen.dart';
+
 import 'package:movie/ui_kit/drawer_menu.dart';
 
 // ---Texts---
-const _kTitle = 'Movie';
+const _kTitle = 'Top Rated';
 
 // ---Parameters---
 const double _kPadding = 10.0;
@@ -24,36 +25,36 @@ const double _maxCrossAxisExtent = 300;
 const double _childAspectRatio = 2 / 3;
 const double _kPaddingLeftRight = 20;
 
-class MovieScreen extends StatefulWidget {
-  static const _routeName = '/movie-screen';
+class TopRatedScreen extends StatefulWidget {
+  static const _routeName = '/top-rated-screen';
 
-  static PageRoute<MovieScreen> get route {
+  static PageRoute<TopRatedScreen> get route {
     return MaterialPageRoute(
       settings: const RouteSettings(name: _routeName),
       builder: (context) {
         return BlocProvider(
-          create: (context) => MovieCubit(),
-          child: const MovieScreen(),
+          create: (context) => TopRatedCubit(),
+          child: const TopRatedScreen(),
         );
       },
     );
   }
 
-  const MovieScreen({Key? key}) : super(key: key);
+  const TopRatedScreen({Key? key}) : super(key: key);
 
   @override
-  State<MovieScreen> createState() => _MovieScreenState();
+  State<TopRatedScreen> createState() => _TopRatedScreenState();
 }
 
-class _MovieScreenState extends State<MovieScreen> {
-  MovieCubit get movieCubit => BlocProvider.of<MovieCubit>(context);
+class _TopRatedScreenState extends State<TopRatedScreen> {
+  TopRatedCubit get topRatedCubit => BlocProvider.of<TopRatedCubit>(context);
 
   late ScrollController _scrollController;
 
   @override
   void initState() {
     _scrollController = ScrollController();
-    movieCubit.getMovies();
+    topRatedCubit.getTopRated();
     super.initState();
     _scrollController.addListener(_scrollListener);
   }
@@ -62,7 +63,7 @@ class _MovieScreenState extends State<MovieScreen> {
     final triggerFetchMoreSize =
         0.9 * _scrollController.position.maxScrollExtent;
     if (_scrollController.position.pixels > triggerFetchMoreSize) {
-      movieCubit.loadMoreMovies();
+      topRatedCubit.loadMoreTopRatedMovies();
     }
   }
 
@@ -77,9 +78,9 @@ class _MovieScreenState extends State<MovieScreen> {
         centerTitle: true,
         title: const Text(_kTitle),
       ),
-      body: BlocBuilder<MovieCubit, MovieState>(
+      body: BlocBuilder<TopRatedCubit, TopRatedState>(
         builder: (context, state) {
-          if (state.status == MovieStatus.error) {
+          if (state.status == TopRatedStatus.error) {
             return Center(
               child: Text(
                 state.errorMessage!,
@@ -87,13 +88,13 @@ class _MovieScreenState extends State<MovieScreen> {
                     .copyWith(color: Colors.red),
               ),
             );
-          } else if (state.status == MovieStatus.loading) {
+          } else if (state.status == TopRatedStatus.loading) {
             return const Center(
               child: CircularProgressIndicator(),
             );
           }
 
-          final isLoadMore = state.status == MovieStatus.loadMore;
+          final isLoadMore = state.status == TopRatedStatus.loadMore;
           final normalizedItemCount =
               state.movies.length + (isLoadMore ? 2 : 0);
 

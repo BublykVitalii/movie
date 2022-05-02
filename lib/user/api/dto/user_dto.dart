@@ -1,6 +1,6 @@
+import 'package:get_it/get_it.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:movie/user/api/dto/avatar_dto.dart';
-
+import 'package:movie/config.dart';
 import 'package:movie/user/domain/user.dart';
 
 part 'user_dto.g.dart';
@@ -9,7 +9,7 @@ part 'user_dto.g.dart';
 class UserDTO {
   final int id;
   final String name;
-  final AvatarDTO avatar;
+  final Map<String, dynamic> avatar;
 
   UserDTO({
     required this.id,
@@ -18,6 +18,8 @@ class UserDTO {
   });
 
   Map<String, dynamic> toJson() => _$UserDTOToJson(this);
+
+  final _appConfig = GetIt.instance.get<AppConfig>();
 
   factory UserDTO.fromJson(Map<String, dynamic> json) =>
       _$UserDTOFromJson(json);
@@ -28,7 +30,7 @@ class UserDTO {
   User toUser() {
     return User(
       name: name,
-      avatar: avatar.toAvatar(),
+      avatar: _appConfig.avatarPath + avatar.toString(), // fix
     );
   }
 }

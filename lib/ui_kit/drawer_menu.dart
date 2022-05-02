@@ -55,7 +55,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
                   right: _kPadding,
                 ),
                 child: TextButton(
-                  onPressed: () => _onTapDrawer(FavoriteScreen.route),
+                  onPressed: () => _onTapDrawer(FavoriteScreen.route()),
                   style: ButtonStyle(
                     overlayColor:
                         MaterialStateProperty.all(Colors.grey.shade400),
