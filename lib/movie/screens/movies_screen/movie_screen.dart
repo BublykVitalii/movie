@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:movie/infrastructure/movie_image.dart';
 
+import 'package:movie/infrastructure/movie_image.dart';
 import 'package:movie/infrastructure/theme/app_colors.dart';
 import 'package:movie/infrastructure/theme/theme_extensions.dart';
 import 'package:movie/movie/domain/movie.dart';
 import 'package:movie/movie/screens/movie_details_screen/movie_details_screen.dart';
 import 'package:movie/movie/screens/movies_screen/cubit/movie_cubit.dart';
-import 'package:movie/movie/screens/popular/popular_screen.dart';
-import 'package:movie/movie/screens/top_rated/top_rated_screen.dart';
-import 'package:movie/movie/screens/upcoming/upcoming_screen.dart';
 import 'package:movie/ui_kit/drawer_menu.dart';
 
 // ---Texts---
@@ -62,7 +59,7 @@ class _MovieScreenState extends State<MovieScreen> {
     final triggerFetchMoreSize =
         0.9 * _scrollController.position.maxScrollExtent;
     if (_scrollController.position.pixels > triggerFetchMoreSize) {
-      movieCubit.loadMoreMovies();
+      movieCubit.loadMore();
     }
   }
 
@@ -71,9 +68,7 @@ class _MovieScreenState extends State<MovieScreen> {
     return Scaffold(
       drawer: const DrawerMenu(),
       appBar: AppBar(
-        actions: const [
-          DropDownMenu(),
-        ],
+        actions: [DropDownMenu(movieCubit: movieCubit)],
         centerTitle: true,
         title: const Text(_kTitle),
       ),
@@ -211,14 +206,12 @@ class BottomLoader extends StatelessWidget {
   }
 }
 
-class DropDownMenu extends StatefulWidget {
-  const DropDownMenu({Key? key}) : super(key: key);
-
-  @override
-  State<DropDownMenu> createState() => _DropDownMenuState();
-}
-
-class _DropDownMenuState extends State<DropDownMenu> {
+class DropDownMenu extends StatelessWidget {
+  const DropDownMenu({
+    Key? key,
+    required this.movieCubit,
+  }) : super(key: key);
+  final MovieCubit movieCubit;
   @override
   Widget build(BuildContext context) {
     String _selectedGender = 'Movie';
@@ -240,16 +233,20 @@ class _DropDownMenuState extends State<DropDownMenu> {
           _selectedGender = value.toString();
           switch (value) {
             case 'Movie':
-              Navigator.push(context, MovieScreen.route);
+              movieCubit.type(value.toString());
+              movieCubit.getMovies();
               break;
             case 'Popular':
-              Navigator.push(context, PopularScreen.route);
+              movieCubit.type(value.toString());
+              movieCubit.getPopular();
               break;
             case 'Top rated':
-              Navigator.push(context, TopRatedScreen.route);
+              movieCubit.type(value.toString());
+              movieCubit.getTopRated();
               break;
             case 'Upcoming':
-              Navigator.push(context, UpcomingScreen.route);
+              movieCubit.type(value.toString());
+              movieCubit.getUpcoming();
               break;
           }
         },
