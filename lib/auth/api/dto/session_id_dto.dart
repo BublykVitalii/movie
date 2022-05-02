@@ -16,14 +16,6 @@ class SessionIdDTO {
   factory SessionIdDTO.fromJson(Map<String, dynamic> json) =>
       _$SessionIdDTOFromJson(json);
 
-  SessionIdDTO copyWith({
-    String? sessionId,
-  }) {
-    return SessionIdDTO(
-      sessionId: sessionId ?? this.sessionId,
-    );
-  }
-
   @override
   String toString() => 'SessionIdDTO(sessionId: $sessionId)';
 }
