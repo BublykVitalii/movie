@@ -3,6 +3,13 @@ import 'package:movie/movie/domain/movie.repository.dart';
 
 import 'movie.dart';
 
+enum MoviesCategory {
+  nowPlaying,
+  popular,
+  topRated,
+  upcoming,
+}
+
 @singleton
 class MovieService {
   MovieService(this._movieRepository);
@@ -38,5 +45,20 @@ class MovieService {
   Future<List<Movie>?> getUpcoming(int page) async {
     _movies = await _movieRepository.getUpcoming(page);
     return _movies;
+  }
+
+  String movieCategory(MoviesCategory type) {
+    switch (type) {
+      case MoviesCategory.nowPlaying:
+        return 'Movie';
+      case MoviesCategory.popular:
+        return 'Popular';
+      case MoviesCategory.topRated:
+        return 'Top Rated';
+      case MoviesCategory.upcoming:
+        return 'Upcoming';
+      default:
+        return 'Movie';
+    }
   }
 }

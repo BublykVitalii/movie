@@ -10,6 +10,7 @@ enum MovieStatus {
 
 class MovieState extends Equatable {
   final MovieStatus status;
+
   final List<Movie> movies;
   final bool hasReachedMax;
   final int page;
@@ -17,12 +18,12 @@ class MovieState extends Equatable {
   final String? errorMessage;
 
   const MovieState({
-    this.errorMessage,
     this.status = MovieStatus.initial,
     this.movies = const <Movie>[],
     this.hasReachedMax = false,
     this.page = 1,
     this.isLoadMore = false,
+    this.errorMessage,
   });
 
   MovieState copyWith({

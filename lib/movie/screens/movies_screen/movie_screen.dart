@@ -5,6 +5,7 @@ import 'package:movie/infrastructure/movie_image.dart';
 import 'package:movie/infrastructure/theme/app_colors.dart';
 import 'package:movie/infrastructure/theme/theme_extensions.dart';
 import 'package:movie/movie/domain/movie.dart';
+import 'package:movie/movie/domain/movie_service.dart';
 import 'package:movie/movie/screens/movie_details_screen/movie_details_screen.dart';
 import 'package:movie/movie/screens/movies_screen/cubit/movie_cubit.dart';
 import 'package:movie/ui_kit/drawer_menu.dart';
@@ -59,7 +60,7 @@ class _MovieScreenState extends State<MovieScreen> {
     final triggerFetchMoreSize =
         0.9 * _scrollController.position.maxScrollExtent;
     if (_scrollController.position.pixels > triggerFetchMoreSize) {
-      movieCubit.loadMore();
+      movieCubit.loadMoreMoviesList();
     }
   }
 
@@ -214,39 +215,35 @@ class DropDownMenu extends StatelessWidget {
   final MovieCubit movieCubit;
   @override
   Widget build(BuildContext context) {
-    String _selectedGender = 'Movie';
     return DropdownButtonHideUnderline(
       child: DropdownButton(
-        value: _selectedGender,
         icon: const Icon(
           Icons.keyboard_arrow_down,
           color: Colors.white,
           size: 30,
         ),
-        style: const TextStyle(color: AppColors.darkBlue),
-        underline: Container(
-          height: 2,
-          color: Colors.deepPurpleAccent,
+        style: context.theme.textTheme.subtitle1!.copyWith(
+          color: AppColors.darkBlue,
+          fontWeight: FontWeight.bold,
         ),
         items: _dropDownItem(),
         onChanged: (value) {
-          _selectedGender = value.toString();
           switch (value) {
-            case 'Movie':
-              movieCubit.type(value.toString());
+            case MoviesCategory.nowPlaying:
+              movieCubit.type(MoviesCategory.nowPlaying);
               movieCubit.getMovies();
               break;
-            case 'Popular':
-              movieCubit.type(value.toString());
-              movieCubit.getPopular();
+            case MoviesCategory.popular:
+              movieCubit.type(MoviesCategory.popular);
+              movieCubit.getMovies();
               break;
-            case 'Top rated':
-              movieCubit.type(value.toString());
-              movieCubit.getTopRated();
+            case MoviesCategory.topRated:
+              movieCubit.type(MoviesCategory.topRated);
+              movieCubit.getMovies();
               break;
-            case 'Upcoming':
-              movieCubit.type(value.toString());
-              movieCubit.getUpcoming();
+            case MoviesCategory.upcoming:
+              movieCubit.type(MoviesCategory.upcoming);
+              movieCubit.getMovies();
               break;
           }
         },
@@ -254,18 +251,20 @@ class DropDownMenu extends StatelessWidget {
     );
   }
 
-  List<DropdownMenuItem<String>> _dropDownItem() {
-    List<String> dropDownItem = [
-      'Movie',
-      'Popular',
-      'Top rated',
-      'Upcoming',
+  List<DropdownMenuItem<MoviesCategory>> _dropDownItem() {
+    const List<MoviesCategory> dropDownItem = [
+      MoviesCategory.nowPlaying,
+      MoviesCategory.popular,
+      MoviesCategory.topRated,
+      MoviesCategory.upcoming,
     ];
     return dropDownItem
-        .map((value) => DropdownMenuItem(
-              value: value,
-              child: Text(value),
-            ))
+        .map(
+          (value) => DropdownMenuItem(
+            value: value,
+            child: Text(movieCubit.movieCategoryToString(value)),
+          ),
+        )
         .toList();
   }
 }
