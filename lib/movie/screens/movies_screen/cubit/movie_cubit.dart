@@ -11,13 +11,17 @@ class MovieCubit extends Cubit<MovieState> {
   MovieCubit() : super(const MovieState());
   MovieService get moviesService => GetIt.instance.get<MovieService>();
 
-  Future<void> getMovies() async {
-    emit(state.copyWith(status: MovieStatus.loading));
+  Future<void> getMovies(MoviesCategory category) async {
+    emit(state.copyWith(
+      status: MovieStatus.loading,
+      category: category,
+      page: 1,
+    ));
     try {
-      final category = await _movieListCategory(state.page);
+      final categoryMovie = await _movieListCategory(state.page);
       emit(state.copyWith(
         status: MovieStatus.success,
-        movies: category,
+        movies: categoryMovie,
       ));
     } catch (e) {
       emit(state.copyWith(
@@ -28,7 +32,7 @@ class MovieCubit extends Cubit<MovieState> {
   }
 
   Future<List<Movie>?> _movieListCategory(int page) async {
-    switch (_typeMovies) {
+    switch (state.category) {
       case MoviesCategory.nowPlaying:
         return moviesService.getNowPlaying(page);
       case MoviesCategory.popular:
@@ -62,11 +66,8 @@ class MovieCubit extends Cubit<MovieState> {
     }
   }
 
-  MoviesCategory _typeMovies = MoviesCategory.nowPlaying;
-  MoviesCategory type(MoviesCategory type) => _typeMovies = type;
-
   Future<List<Movie>?> _movieList(int page) async {
-    switch (_typeMovies) {
+    switch (state.category) {
       case MoviesCategory.nowPlaying:
         return moviesService.getNowPlaying(page);
       case MoviesCategory.popular:
@@ -79,7 +80,4 @@ class MovieCubit extends Cubit<MovieState> {
         return moviesService.getNowPlaying(page);
     }
   }
-
-  String movieCategoryToString(MoviesCategory type) =>
-      moviesService.movieCategory(type);
 }

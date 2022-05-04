@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 
 import 'package:movie/infrastructure/movie_image.dart';
 import 'package:movie/infrastructure/theme/app_colors.dart';
@@ -51,7 +52,7 @@ class _MovieScreenState extends State<MovieScreen> {
   @override
   void initState() {
     _scrollController = ScrollController();
-    movieCubit.getMovies();
+    movieCubit.getMovies(MoviesCategory.nowPlaying);
     super.initState();
     _scrollController.addListener(_scrollListener);
   }
@@ -208,6 +209,7 @@ class BottomLoader extends StatelessWidget {
 }
 
 class DropDownMenu extends StatelessWidget {
+  MovieService get moviesService => GetIt.instance.get<MovieService>();
   const DropDownMenu({
     Key? key,
     required this.movieCubit,
@@ -216,7 +218,7 @@ class DropDownMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonHideUnderline(
-      child: DropdownButton(
+      child: DropdownButton<MoviesCategory>(
         icon: const Icon(
           Icons.keyboard_arrow_down,
           color: Colors.white,
@@ -228,24 +230,7 @@ class DropDownMenu extends StatelessWidget {
         ),
         items: _dropDownItem(),
         onChanged: (value) {
-          switch (value) {
-            case MoviesCategory.nowPlaying:
-              movieCubit.type(MoviesCategory.nowPlaying);
-              movieCubit.getMovies();
-              break;
-            case MoviesCategory.popular:
-              movieCubit.type(MoviesCategory.popular);
-              movieCubit.getMovies();
-              break;
-            case MoviesCategory.topRated:
-              movieCubit.type(MoviesCategory.topRated);
-              movieCubit.getMovies();
-              break;
-            case MoviesCategory.upcoming:
-              movieCubit.type(MoviesCategory.upcoming);
-              movieCubit.getMovies();
-              break;
-          }
+          movieCubit.getMovies(value!);
         },
       ),
     );
@@ -262,7 +247,7 @@ class DropDownMenu extends StatelessWidget {
         .map(
           (value) => DropdownMenuItem(
             value: value,
-            child: Text(movieCubit.movieCategoryToString(value)),
+            child: Text(moviesService.movieCategoryToString(value)),
           ),
         )
         .toList();

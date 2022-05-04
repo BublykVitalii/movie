@@ -47,7 +47,7 @@ class MovieService {
     return _movies;
   }
 
-  String movieCategory(MoviesCategory type) {
+  static String movieCategory(MoviesCategory type) {
     switch (type) {
       case MoviesCategory.nowPlaying:
         return 'Movie';
@@ -61,4 +61,6 @@ class MovieService {
         return 'Movie';
     }
   }
+
+  String movieCategoryToString(MoviesCategory type) => movieCategory(type);
 }
