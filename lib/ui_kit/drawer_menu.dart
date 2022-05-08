@@ -8,6 +8,7 @@ import 'package:movie/infrastructure/theme/app_colors.dart';
 import 'package:movie/infrastructure/theme/theme_extensions.dart';
 import 'package:movie/movie/screens/movies_screen/movie_screen.dart';
 import 'package:movie/movie_favorite/screen/favorite_screen.dart';
+import 'package:movie/my_movie/my_movie_screen.dart';
 
 // ---Texts---
 const _kLogOut = 'Log out';
@@ -101,6 +102,37 @@ class _DrawerMenuState extends State<DrawerMenu> {
                     width: double.infinity,
                     child: Text(
                       _kMovie,
+                      style: context.theme.textTheme.bodyText1!.copyWith(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                  left: _kPadding,
+                  right: _kPadding,
+                ),
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.push(context, MyMovieScreen.route());
+                  },
+                  style: ButtonStyle(
+                    overlayColor:
+                        MaterialStateProperty.all(Colors.grey.shade400),
+                    backgroundColor:
+                        MaterialStateProperty.all(AppColors.darkBlue),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(_kRadius),
+                      ),
+                    ),
+                  ),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: Text(
+                      _kMyMovie,
                       style: context.theme.textTheme.bodyText1!.copyWith(
                         color: Colors.white,
                       ),
