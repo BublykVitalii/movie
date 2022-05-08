@@ -15,14 +15,16 @@ class MovieState extends Equatable {
   final int page;
   final bool isLoadMore;
   final String? errorMessage;
+  final MoviesCategory category;
 
   const MovieState({
-    this.errorMessage,
     this.status = MovieStatus.initial,
     this.movies = const <Movie>[],
     this.hasReachedMax = false,
     this.page = 1,
     this.isLoadMore = false,
+    this.errorMessage,
+    this.category = MoviesCategory.nowPlaying,
   });
 
   MovieState copyWith({
@@ -32,6 +34,7 @@ class MovieState extends Equatable {
     int? page,
     bool? isLoadMore,
     String? errorMessage,
+    MoviesCategory? category,
   }) {
     return MovieState(
       status: status ?? this.status,
@@ -40,12 +43,13 @@ class MovieState extends Equatable {
       page: page ?? this.page,
       isLoadMore: isLoadMore ?? this.isLoadMore,
       errorMessage: errorMessage ?? this.errorMessage,
+      category: category ?? this.category,
     );
   }
 
   @override
   String toString() {
-    return 'MovieState { status: $status, hasReachedMax: $hasReachedMax, movies: ${movies.length}, page: $page , isLoadMore: $isLoadMore}';
+    return 'MovieState { status: $status, hasReachedMax: $hasReachedMax, movies: ${movies.length}, page: $page , isLoadMore: $isLoadMore, category: $category,}';
   }
 
   @override
@@ -56,5 +60,6 @@ class MovieState extends Equatable {
         page,
         isLoadMore,
         errorMessage,
+        category,
       ];
 }

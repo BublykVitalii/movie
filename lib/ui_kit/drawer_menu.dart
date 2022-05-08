@@ -7,12 +7,13 @@ import 'package:movie/infrastructure/movie_image.dart';
 import 'package:movie/infrastructure/theme/app_colors.dart';
 import 'package:movie/infrastructure/theme/theme_extensions.dart';
 import 'package:movie/movie/screens/movies_screen/movie_screen.dart';
-import 'package:movie/movie_favorite_screen/screen/favorite_screen.dart';
+import 'package:movie/movie_favorite/screen/favorite_screen.dart';
 
 // ---Texts---
 const _kLogOut = 'Log out';
 const _kFavoriteMovie = 'Favorite movie';
 const _kMovie = 'Movie';
+const _kMyMovie = 'My movie';
 
 // ---Parameters---
 const _kScale = 1.2;
@@ -55,7 +56,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
                   right: _kPadding,
                 ),
                 child: TextButton(
-                  onPressed: () => _onTapDrawer(FavoriteScreen.route),
+                  onPressed: () => _onTapDrawer(FavoriteScreen.route()),
                   style: ButtonStyle(
                     overlayColor:
                         MaterialStateProperty.all(Colors.grey.shade400),

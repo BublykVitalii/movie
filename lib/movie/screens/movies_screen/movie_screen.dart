@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:movie/infrastructure/movie_image.dart';
+import 'package:get_it/get_it.dart';
 
+import 'package:movie/infrastructure/movie_image.dart';
 import 'package:movie/infrastructure/theme/app_colors.dart';
 import 'package:movie/infrastructure/theme/theme_extensions.dart';
 import 'package:movie/movie/domain/movie.dart';
+import 'package:movie/movie/domain/movie_service.dart';
 import 'package:movie/movie/screens/movie_details_screen/movie_details_screen.dart';
 import 'package:movie/movie/screens/movies_screen/cubit/movie_cubit.dart';
 import 'package:movie/ui_kit/drawer_menu.dart';
@@ -50,7 +52,7 @@ class _MovieScreenState extends State<MovieScreen> {
   @override
   void initState() {
     _scrollController = ScrollController();
-    movieCubit.getMovies();
+    movieCubit.getMovies(MoviesCategory.nowPlaying);
     super.initState();
     _scrollController.addListener(_scrollListener);
   }
@@ -59,7 +61,7 @@ class _MovieScreenState extends State<MovieScreen> {
     final triggerFetchMoreSize =
         0.9 * _scrollController.position.maxScrollExtent;
     if (_scrollController.position.pixels > triggerFetchMoreSize) {
-      movieCubit.loadMoreMovies();
+      movieCubit.loadMoreMoviesList();
     }
   }
 
@@ -68,6 +70,7 @@ class _MovieScreenState extends State<MovieScreen> {
     return Scaffold(
       drawer: const DrawerMenu(),
       appBar: AppBar(
+        actions: [PopUpMenu(movieCubit: movieCubit)],
         centerTitle: true,
         title: const Text(_kTitle),
       ),
@@ -202,5 +205,38 @@ class BottomLoader extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class PopUpMenu extends StatelessWidget {
+  final MovieCubit movieCubit;
+  MovieService get moviesService => GetIt.instance.get<MovieService>();
+  const PopUpMenu({Key? key, required this.movieCubit}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return PopupMenuButton<MoviesCategory>(
+      itemBuilder: (context) => _popupMenuItem(),
+      onSelected: (MoviesCategory value) {
+        movieCubit.getMovies(value);
+      },
+    );
+  }
+
+  List<PopupMenuEntry<MoviesCategory>> _popupMenuItem() {
+    const List<MoviesCategory> popUpMenuItem = [
+      MoviesCategory.nowPlaying,
+      MoviesCategory.popular,
+      MoviesCategory.topRated,
+      MoviesCategory.upcoming,
+    ];
+    return popUpMenuItem
+        .map(
+          (value) => PopupMenuItem(
+            value: value,
+            child: Text(moviesService.movieCategoryToString(value)),
+          ),
+        )
+        .toList();
   }
 }

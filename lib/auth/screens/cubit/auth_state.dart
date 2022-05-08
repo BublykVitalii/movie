@@ -28,7 +28,7 @@ class AuthState {
 
   @override
   String toString() {
-    return 'MovieState {  status: $status, errorMessage: $errorMessage';
+    return 'AuthState {  status: $status, errorMessage: $errorMessage';
   }
 
   List<Object?> get props => [

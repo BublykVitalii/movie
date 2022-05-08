@@ -1,15 +1,14 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:movie/movie/api/dto/movie_dto.dart';
+import 'package:movie/movie_favorite/api/client/dto/favorite_data_dto.dart';
+import 'package:movie/movie_favorite/api/client/favorite_movie_api.dart';
+import 'package:movie/movie_favorite/domain/favorite_exceptions.dart';
+import 'package:movie/movie_favorite/domain/favorite_movie_repository.dart';
 import 'package:movie/utils/store_interaction.dart';
 
 import 'package:movie/movie/domain/movie.dart';
 import 'package:movie/movie/domain/movie_exceptions.dart';
-
-import 'package:movie/movie_favorite_screen/api/client/dto/favorite_data_dto.dart';
-import 'package:movie/movie_favorite_screen/api/client/favorite_movie_api.dart';
-import 'package:movie/movie_favorite_screen/domain/favorite_exceptions.dart';
-import 'package:movie/movie_favorite_screen/domain/favorite_movie_repository.dart';
 
 @Singleton(as: FavoriteMovieRepository)
 class HttpFavoriteMovieRepository implements FavoriteMovieRepository {

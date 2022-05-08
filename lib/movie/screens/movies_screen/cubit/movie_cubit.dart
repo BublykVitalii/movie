@@ -11,14 +11,17 @@ class MovieCubit extends Cubit<MovieState> {
   MovieCubit() : super(const MovieState());
   MovieService get moviesService => GetIt.instance.get<MovieService>();
 
-  Future<void> getMovies() async {
-    emit(state.copyWith(status: MovieStatus.loading));
+  Future<void> getMovies(MoviesCategory category) async {
+    emit(state.copyWith(
+      status: MovieStatus.loading,
+      category: category,
+      page: 1,
+    ));
     try {
-      final nowPlaying = await moviesService.getNowPlaying(state.page);
-      final movies = List.of(state.movies)..addAll(nowPlaying!);
+      final categoryMovie = await _movieListCategory(state.page);
       emit(state.copyWith(
         status: MovieStatus.success,
-        movies: movies,
+        movies: categoryMovie,
       ));
     } catch (e) {
       emit(state.copyWith(
@@ -28,13 +31,28 @@ class MovieCubit extends Cubit<MovieState> {
     }
   }
 
-  Future<void> loadMoreMovies() async {
+  Future<List<Movie>?> _movieListCategory(int page) async {
+    switch (state.category) {
+      case MoviesCategory.nowPlaying:
+        return moviesService.getNowPlaying(page);
+      case MoviesCategory.popular:
+        return moviesService.getPopular(page);
+      case MoviesCategory.topRated:
+        return moviesService.getTopRated(page);
+      case MoviesCategory.upcoming:
+        return moviesService.getUpcoming(page);
+      default:
+        return moviesService.getNowPlaying(page);
+    }
+  }
+
+  Future<void> loadMoreMoviesList() async {
     if (state.status == MovieStatus.loadMore) return;
     emit(state.copyWith(status: MovieStatus.loadMore));
     try {
       final nextPage = state.page + 1;
-      final nowPlaying = await moviesService.getNowPlaying(nextPage);
-      final movies = List.of(state.movies)..addAll(nowPlaying!);
+      final type = await _movieList(nextPage);
+      final movies = List.of(state.movies)..addAll(type!);
       emit(state.copyWith(
         status: MovieStatus.success,
         movies: movies,
@@ -45,6 +63,21 @@ class MovieCubit extends Cubit<MovieState> {
         status: MovieStatus.error,
         errorMessage: error.toString(),
       ));
+    }
+  }
+
+  Future<List<Movie>?> _movieList(int page) async {
+    switch (state.category) {
+      case MoviesCategory.nowPlaying:
+        return moviesService.getNowPlaying(page);
+      case MoviesCategory.popular:
+        return moviesService.getPopular(page);
+      case MoviesCategory.topRated:
+        return moviesService.getTopRated(page);
+      case MoviesCategory.upcoming:
+        return moviesService.getUpcoming(page);
+      default:
+        return moviesService.getNowPlaying(page);
     }
   }
 }

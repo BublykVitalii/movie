@@ -6,7 +6,7 @@ import 'package:movie/infrastructure/theme/app_colors.dart';
 import 'package:movie/infrastructure/theme/theme_extensions.dart';
 import 'package:movie/movie/domain/movie.dart';
 import 'package:movie/movie/screens/movie_details_screen/movie_details_screen.dart';
-import 'package:movie/movie_favorite_screen/screen/cubit/favorite_cubit.dart';
+import 'package:movie/movie_favorite/screen/cubit/favorite_cubit.dart';
 import 'package:movie/ui_kit/drawer_menu.dart';
 
 // ---Texts---
@@ -24,7 +24,7 @@ const _kMaxLines = 2;
 class FavoriteScreen extends StatefulWidget {
   static const _routeName = '/favorite-screen';
 
-  static PageRoute<FavoriteScreen> get route {
+  static PageRoute<FavoriteScreen> route() {
     return MaterialPageRoute(
       settings: const RouteSettings(name: _routeName),
       builder: (context) {
@@ -62,7 +62,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
       body: SafeArea(
         child: BlocBuilder<FavoriteCubit, FavoriteState>(
           builder: (context, state) {
-            if (state is FavoriteLoading) {
+            if (state.status == FavoriteStatus.loading) {
               return const Center(
                 child: CircularProgressIndicator(
                   backgroundColor: AppColors.darkBlue,
@@ -70,7 +70,8 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                 ),
               );
             }
-            if (state is FavoriteSuccess) {
+
+            if (state.status == FavoriteStatus.success) {
               return ListView.separated(
                 padding: const EdgeInsets.only(
                   left: _kLeft,
@@ -78,9 +79,9 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                 ),
                 separatorBuilder: (BuildContext context, int index) =>
                     const Divider(),
-                itemCount: state.listMovies.length,
+                itemCount: state.listMovies!.length,
                 itemBuilder: (BuildContext context, int index) {
-                  final movie = state.listMovies[index];
+                  final movie = state.listMovies![index];
                   return MovieCard(
                     movie: movie,
                     title: movie.title,
