@@ -6,7 +6,7 @@ import 'package:movie/infrastructure/theme/app_colors.dart';
 import 'package:movie/infrastructure/theme/theme_extensions.dart';
 import 'package:movie/movie/domain/movie.dart';
 import 'package:movie/movie/screens/movie_details_screen/movie_details_screen.dart';
-import 'package:movie/movie_favorite_screen/screen/cubit/favorite_cubit.dart';
+import 'package:movie/movie_favorite/screen/cubit/favorite_cubit.dart';
 import 'package:movie/ui_kit/drawer_menu.dart';
 
 // ---Texts---

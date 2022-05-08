@@ -11,7 +11,8 @@ import 'package:movie/infrastructure/theme/theme_extensions.dart';
 import 'package:movie/movie/domain/movie.dart';
 import 'package:movie/movie/domain/movie_service.dart';
 import 'package:movie/movie/screens/movie_details_screen/cubit/movie_details_cubit.dart';
-import 'package:movie/movie_favorite_screen/domain/favorite_service.dart';
+import 'package:movie/movie_favorite/domain/favorite_service.dart';
+
 import 'package:movie/utils/date_time_formatting_extension.dart';
 
 // ---Texts---

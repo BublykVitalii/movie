@@ -70,7 +70,7 @@ class _MovieScreenState extends State<MovieScreen> {
     return Scaffold(
       drawer: const DrawerMenu(),
       appBar: AppBar(
-        actions: [DropDownMenu(movieCubit: movieCubit)],
+        actions: [PopUpMenu(movieCubit: movieCubit)],
         centerTitle: true,
         title: const Text(_kTitle),
       ),
@@ -208,44 +208,31 @@ class BottomLoader extends StatelessWidget {
   }
 }
 
-class DropDownMenu extends StatelessWidget {
-  MovieService get moviesService => GetIt.instance.get<MovieService>();
-  const DropDownMenu({
-    Key? key,
-    required this.movieCubit,
-  }) : super(key: key);
+class PopUpMenu extends StatelessWidget {
   final MovieCubit movieCubit;
+  MovieService get moviesService => GetIt.instance.get<MovieService>();
+  const PopUpMenu({Key? key, required this.movieCubit}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return DropdownButtonHideUnderline(
-      child: DropdownButton<MoviesCategory>(
-        icon: const Icon(
-          Icons.keyboard_arrow_down,
-          color: Colors.white,
-          size: 30,
-        ),
-        style: context.theme.textTheme.subtitle1!.copyWith(
-          color: AppColors.darkBlue,
-          fontWeight: FontWeight.bold,
-        ),
-        items: _dropDownItem(),
-        onChanged: (value) {
-          movieCubit.getMovies(value!);
-        },
-      ),
+    return PopupMenuButton<MoviesCategory>(
+      itemBuilder: (context) => _popupMenuItem(),
+      onSelected: (MoviesCategory value) {
+        movieCubit.getMovies(value);
+      },
     );
   }
 
-  List<DropdownMenuItem<MoviesCategory>> _dropDownItem() {
-    const List<MoviesCategory> dropDownItem = [
+  List<PopupMenuEntry<MoviesCategory>> _popupMenuItem() {
+    const List<MoviesCategory> popUpMenuItem = [
       MoviesCategory.nowPlaying,
       MoviesCategory.popular,
       MoviesCategory.topRated,
       MoviesCategory.upcoming,
     ];
-    return dropDownItem
+    return popUpMenuItem
         .map(
-          (value) => DropdownMenuItem(
+          (value) => PopupMenuItem(
             value: value,
             child: Text(moviesService.movieCategoryToString(value)),
           ),

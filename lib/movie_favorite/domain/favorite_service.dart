@@ -1,6 +1,6 @@
 import 'package:injectable/injectable.dart';
 import 'package:movie/movie/domain/movie.dart';
-import 'package:movie/movie_favorite_screen/domain/favorite_movie_repository.dart';
+import 'package:movie/movie_favorite/domain/favorite_movie_repository.dart';
 
 @singleton
 class FavoriteService {

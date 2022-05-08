@@ -15,10 +15,9 @@ import '../config.dart' as _i3;
 import '../movie/api/http_movie.repository.dart' as _i6;
 import '../movie/domain/movie.repository.dart' as _i5;
 import '../movie/domain/movie_service.dart' as _i7;
-import '../movie_favorite_screen/api/http_favorite_movie_repository.dart'
-    as _i16;
-import '../movie_favorite_screen/domain/favorite_movie_repository.dart' as _i15;
-import '../movie_favorite_screen/domain/favorite_service.dart' as _i17;
+import '../movie_favorite/api/http_favorite_movie_repository.dart' as _i16;
+import '../movie_favorite/domain/favorite_movie_repository.dart' as _i15;
+import '../movie_favorite/domain/favorite_service.dart' as _i17;
 import '../user/api/http_user_repository.dart' as _i10;
 import '../user/domain/user_repository.dart' as _i9;
 import '../user/domain/user_service.dart' as _i11;
