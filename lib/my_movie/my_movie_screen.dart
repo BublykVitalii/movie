@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:movie/add_movie/add_movie_screen.dart';
+import 'package:movie/add_movie/domain/movie.dart';
 import 'package:movie/infrastructure/movie_image.dart';
 import 'package:movie/infrastructure/theme/app_colors.dart';
 import 'package:movie/infrastructure/theme/theme_extensions.dart';
+import 'package:movie/my_movie/cubit/my_movie_cubit.dart';
 
 // ---Texts---
 const _kTitle = 'My Movie';
@@ -22,7 +26,10 @@ class MyMovieScreen extends StatefulWidget {
     return MaterialPageRoute(
       settings: const RouteSettings(name: _routeName),
       builder: (context) {
-        return const MyMovieScreen();
+        return BlocProvider(
+          create: (context) => MyMovieCubit(),
+          child: const MyMovieScreen(),
+        );
       },
     );
   }
@@ -34,6 +41,14 @@ class MyMovieScreen extends StatefulWidget {
 }
 
 class _MyMovieScreenState extends State<MyMovieScreen> {
+  MyMovieCubit get myMovieCubit => BlocProvider.of<MyMovieCubit>(context);
+
+  @override
+  void initState() {
+    myMovieCubit.getMovie();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,31 +57,46 @@ class _MyMovieScreenState extends State<MyMovieScreen> {
         centerTitle: true,
         title: const Text(_kTitle),
       ),
-      body: SafeArea(
-        child: Stack(
-          children: [
-            ListView(
-              padding: const EdgeInsets.only(
-                left: _kLeft,
-                top: _kTop,
-                right: _kLeft,
-              ),
-              children: const [
-                _MovieCard(),
+      body: BlocConsumer<MyMovieCubit, MyMovieState>(
+        listener: (context, state) {},
+        builder: (context, state) {
+          if (state.status == MyMovieStatus.success) {}
+          return SafeArea(
+            child: Stack(
+              children: [
+                ListView.separated(
+                  padding: const EdgeInsets.only(
+                    left: _kLeft,
+                    top: _kTop,
+                    right: _kLeft,
+                  ),
+                  separatorBuilder: (BuildContext context, int index) =>
+                      const Divider(),
+                  itemCount: state.listMovie!.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    List<Movie> movies = state.listMovie ?? [];
+                    return _MovieCard(
+                      movie: movies[index],
+                    );
+                  },
+                ),
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: FloatingActionButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        AddMovieScreen.route(myMovieCubit),
+                      );
+                    },
+                    backgroundColor: AppColors.darkBlueBackground,
+                    child: const Icon(Icons.add),
+                  ),
+                ),
               ],
             ),
-            Align(
-              alignment: Alignment.bottomRight,
-              child: FloatingActionButton(
-                onPressed: () {
-                  Navigator.push(context, AddMovieScreen.route());
-                },
-                backgroundColor: AppColors.darkBlueBackground,
-                child: const Icon(Icons.add),
-              ),
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
@@ -75,8 +105,9 @@ class _MyMovieScreenState extends State<MyMovieScreen> {
 class _MovieCard extends StatelessWidget {
   const _MovieCard({
     Key? key,
+    required this.movie,
   }) : super(key: key);
-
+  final Movie movie;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -129,7 +160,7 @@ class _MovieCard extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(_kPaddingAll),
                   child: Text(
-                    'title',
+                    movie.title,
                     style: context.theme.textTheme.subtitle1!.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
@@ -141,7 +172,7 @@ class _MovieCard extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(_kPaddingAll),
                   child: Text(
-                    'overview!',
+                    movie.description,
                     style: context.theme.textTheme.subtitle1!.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.normal,

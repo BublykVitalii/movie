@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movie/add_movie/cubit/add_movie_cubit.dart';
 import 'package:movie/infrastructure/theme/app_colors.dart';
 import 'package:movie/infrastructure/theme/theme_extensions.dart';
-import 'package:movie/ui_kit/drawer_menu.dart';
+
+import 'package:movie/my_movie/cubit/my_movie_cubit.dart';
 
 // ---Texts---
 const _kTitle = 'add movie';
@@ -10,11 +12,17 @@ const _kTitle = 'add movie';
 class AddMovieScreen extends StatefulWidget {
   static const _routeName = '/movie-create-screen';
 
-  static PageRoute<AddMovieScreen> route() {
+  static PageRoute<AddMovieScreen> route(MyMovieCubit myMovieCubit) {
     return MaterialPageRoute(
       settings: const RouteSettings(name: _routeName),
       builder: (context) {
-        return const AddMovieScreen();
+        return BlocProvider.value(
+          value: myMovieCubit,
+          child: BlocProvider(
+            create: (context) => AddMovieCubit(),
+            child: const AddMovieScreen(),
+          ),
+        );
       },
     );
   }
@@ -26,47 +34,67 @@ class AddMovieScreen extends StatefulWidget {
 }
 
 class _AddMovieScreenState extends State<AddMovieScreen> {
-  String? titleText;
-  String? descriptionText;
+  String? title;
+  String? description;
+
   final _formKey = GlobalKey<FormState>();
+
+  _AddMovieScreenState();
+  AddMovieCubit get addCubit => BlocProvider.of<AddMovieCubit>(context);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.darkBlue,
-      drawer: const DrawerMenu(),
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text(_kTitle),
-      ),
-      body: Form(
-        key: _formKey,
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.only(
-              top: 10,
-              left: 8.0,
-              right: 8.0,
-            ),
-            child: Column(
-              children: [
-                _TitleMovie(
-                  onSaved: (value) {
-                    titleText = value;
-                  },
+    return BlocListener<AddMovieCubit, AddMovieState>(
+      listener: (context, state) {
+        if (state.status == AddMovieStatus.success) {
+          BlocProvider.of<MyMovieCubit>(context).data(
+            title!,
+            description!,
+          );
+        }
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.darkBlue,
+        appBar: AppBar(
+          centerTitle: true,
+          title: const Text(_kTitle),
+        ),
+        body: BlocBuilder<AddMovieCubit, AddMovieState>(
+          builder: (context, state) {
+            return Form(
+              key: _formKey,
+              child: Center(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.only(
+                    top: 10,
+                    left: 8.0,
+                    right: 8.0,
+                  ),
+                  child: Column(
+                    children: [
+                      _TitleMovie(
+                        onSaved: (value) {
+                          title = value;
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      _DescriptionMovie(
+                        onSaved: (value) {
+                          description = value;
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      FloatingActionButton(
+                        backgroundColor: AppColors.darkBlueBackground,
+                        child: const Icon(Icons.add),
+                        onPressed: _onPressedSave,
+                      ),
+                    ],
+                  ),
                 ),
-                const SizedBox(height: 20),
-                _DescriptionMovie(
-                  onSaved: (value) {
-                    descriptionText = value;
-                  },
-                ),
-                FloatingActionButton(
-                  onPressed: _onPressedSave,
-                ),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         ),
       ),
     );
@@ -75,6 +103,8 @@ class _AddMovieScreenState extends State<AddMovieScreen> {
   void _onPressedSave() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
+      addCubit.saveTitleDescription(title!, description!);
+      Navigator.pop(context);
     }
   }
 }
@@ -83,11 +113,11 @@ class _TitleMovie extends StatelessWidget {
   const _TitleMovie({
     Key? key,
     required this.onSaved,
-    this.titleText,
+    this.title,
   }) : super(key: key);
 
   final ValueChanged<String?> onSaved;
-  final String? titleText;
+  final String? title;
 
   @override
   Widget build(BuildContext context) {
@@ -100,7 +130,7 @@ class _TitleMovie extends StatelessWidget {
         style: context.theme.textTheme.subtitle1!
             .copyWith(color: AppColors.darkBlue),
         decoration: InputDecoration(
-          labelText: titleText,
+          labelText: title,
           filled: true,
           fillColor: Colors.white,
           hintText: 'write title movie',
@@ -131,23 +161,24 @@ class _DescriptionMovie extends StatelessWidget {
   const _DescriptionMovie({
     Key? key,
     required this.onSaved,
-    this.descriptionText,
+    this.description,
   }) : super(key: key);
 
   final ValueChanged<String?> onSaved;
-  final String? descriptionText;
+  final String? description;
 
   @override
   Widget build(BuildContext context) {
     return Theme(
       data: Theme.of(context).copyWith(splashColor: Colors.transparent),
       child: TextFormField(
+        onSaved: onSaved,
         validator: _validate,
         autofocus: false,
         style: context.theme.textTheme.subtitle1!
             .copyWith(color: AppColors.darkBlue),
         decoration: InputDecoration(
-          labelText: descriptionText,
+          labelText: description,
           filled: true,
           fillColor: Colors.white,
           hintText: 'write description movie',
