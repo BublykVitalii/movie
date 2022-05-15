@@ -2,22 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:movie/add_movie/add_movie_screen.dart';
-import 'package:movie/add_movie/domain/movie.dart';
 import 'package:movie/infrastructure/movie_image.dart';
 import 'package:movie/infrastructure/theme/app_colors.dart';
 import 'package:movie/infrastructure/theme/theme_extensions.dart';
+import 'package:movie/movie/domain/movie.dart';
 import 'package:movie/my_movie/cubit/my_movie_cubit.dart';
 
 // ---Texts---
 const _kTitle = 'My Movie';
 
 // ---Parameters---
-const _kCircular = 20.0;
-const _kLeft = 10.0;
-const _kTop = 10.0;
+const _kCardPadding = 10.0;
 const _kHeight = 200.0;
 const _kWidth = 140.0;
 const _kPaddingAll = 8.0;
+const _spreadRadius = 0.2;
+const _kWidthOne = 10.0;
+const _kWidthTwo = 0.5;
+const _kRadius = 3.0;
+const _kMaxLineOne = 2;
+const _kMaxLineTwo = 7;
 
 class MyMovieScreen extends StatefulWidget {
   static const _routeName = '/my-movie-screen';
@@ -57,43 +61,33 @@ class _MyMovieScreenState extends State<MyMovieScreen> {
         centerTitle: true,
         title: const Text(_kTitle),
       ),
-      body: BlocConsumer<MyMovieCubit, MyMovieState>(
-        listener: (context, state) {},
+      floatingActionButton: Align(
+        alignment: Alignment.bottomRight,
+        child: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              AddMovieScreen.route(myMovieCubit),
+            );
+          },
+          backgroundColor: AppColors.darkBlueBackground,
+          child: const Icon(Icons.add),
+        ),
+      ),
+      body: BlocBuilder<MyMovieCubit, MyMovieState>(
         builder: (context, state) {
-          if (state.status == MyMovieStatus.success) {}
           return SafeArea(
-            child: Stack(
-              children: [
-                ListView.separated(
-                  padding: const EdgeInsets.only(
-                    left: _kLeft,
-                    top: _kTop,
-                    right: _kLeft,
-                  ),
-                  separatorBuilder: (BuildContext context, int index) =>
-                      const Divider(),
-                  itemCount: state.listMovie!.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    List<Movie> movies = state.listMovie ?? [];
-                    return _MovieCard(
-                      movie: movies[index],
-                    );
-                  },
-                ),
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: FloatingActionButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        AddMovieScreen.route(myMovieCubit),
-                      );
-                    },
-                    backgroundColor: AppColors.darkBlueBackground,
-                    child: const Icon(Icons.add),
-                  ),
-                ),
-              ],
+            child: ListView.separated(
+              padding: const EdgeInsets.all(_kCardPadding),
+              separatorBuilder: (BuildContext context, int index) =>
+                  const Divider(),
+              itemCount: state.listMovie?.length ?? 0,
+              itemBuilder: (BuildContext context, int index) {
+                List<Movie> movies = state.listMovie ?? [];
+                return _MovieCard(
+                  movie: movies[index],
+                );
+              },
             ),
           );
         },
@@ -115,15 +109,15 @@ class _MovieCard extends StatelessWidget {
         boxShadow: const [
           BoxShadow(
             color: Colors.black,
-            spreadRadius: 0.2,
+            spreadRadius: _spreadRadius,
           )
         ],
         color: AppColors.darkBlueBackground,
         border: Border.all(
-          width: 10,
+          width: _kWidthOne,
           color: AppColors.darkBlueBackground,
         ),
-        borderRadius: BorderRadius.circular(_kCircular),
+        borderRadius: BorderRadius.circular(_kCardPadding),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -135,16 +129,16 @@ class _MovieCard extends StatelessWidget {
               boxShadow: const [
                 BoxShadow(
                   color: AppColors.darkBlueRadius,
-                  spreadRadius: 3,
-                  blurRadius: 3,
+                  spreadRadius: _kRadius,
+                  blurRadius: _kRadius,
                   blurStyle: BlurStyle.solid,
                 )
               ],
               border: Border.all(
-                width: 0.5,
+                width: _kWidthTwo,
                 color: Colors.white,
               ),
-              borderRadius: BorderRadius.circular(_kCircular),
+              borderRadius: BorderRadius.circular(_kCardPadding),
               image: DecorationImage(
                 fit: BoxFit.cover,
                 image: Image.asset(
@@ -160,24 +154,24 @@ class _MovieCard extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(_kPaddingAll),
                   child: Text(
-                    movie.title,
+                    movie.title!,
                     style: context.theme.textTheme.subtitle1!.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
-                    maxLines: 2,
+                    maxLines: _kMaxLineOne,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(_kPaddingAll),
                   child: Text(
-                    movie.description,
+                    movie.overview!,
                     style: context.theme.textTheme.subtitle1!.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.normal,
                     ),
-                    maxLines: 7,
+                    maxLines: _kMaxLineTwo,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),

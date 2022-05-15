@@ -1,48 +1,35 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:movie/add_movie/domain/movie.dart';
+import 'package:movie/movie/domain/movie.dart';
+
 part 'my_movie_state.dart';
 
 class MyMovieCubit extends Cubit<MyMovieState> {
   MyMovieCubit() : super(const MyMovieState());
 
-  final List<Movie> _listMovie = <Movie>[
-    Movie(
-      title: 'Dogma',
-      description: 'Welcome to hell',
-      id: 0,
-    ),
-    Movie(
-      title: 'Doctor who?',
-      description: 'Welcome to summer',
-      id: 1,
-    ),
-  ];
-
-  List<Movie> get listMovie => _listMovie;
-
   void getMovie() {
     emit(state.copyWith(
       status: MyMovieStatus.success,
-      listMovie: _listMovie,
+      listMovie: state.listMovie,
     ));
   }
 
-  void data(String title, String description) {
+  void updateMovieList(String title, String description) {
+    List<Movie> listMovie = state.listMovie ?? [];
     emit(state.copyWith(
       status: MyMovieStatus.loading,
-      listMovie: _listMovie,
+      listMovie: listMovie,
     ));
     final movie = Movie(
       title: title,
-      description: description,
+      overview: description,
       id: listMovie.length,
     );
-    _listMovie.add(movie);
+    listMovie.add(movie);
 
     emit(state.copyWith(
       status: MyMovieStatus.success,
-      listMovie: _listMovie,
+      listMovie: listMovie,
     ));
   }
 }

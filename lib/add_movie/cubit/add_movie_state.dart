@@ -10,27 +10,23 @@ enum AddMovieStatus {
 class AddMovieState extends Equatable {
   final AddMovieStatus status;
   final String? errorMessage;
-  final String? title;
-  final String? description;
+  final Movie? movie;
 
   const AddMovieState({
     this.status = AddMovieStatus.initial,
     this.errorMessage,
-    this.title = '',
-    this.description = '',
+    this.movie,
   });
 
   AddMovieState copyWith({
     AddMovieStatus? status,
     String? errorMessage,
-    String? title,
-    String? description,
+    Movie? movie,
   }) {
     return AddMovieState(
       status: status ?? this.status,
       errorMessage: errorMessage ?? this.errorMessage,
-      title: title ?? this.title,
-      description: description ?? this.description,
+      movie: movie ?? this.movie,
     );
   }
 
@@ -38,7 +34,5 @@ class AddMovieState extends Equatable {
   List<Object?> get props => [
         status,
         errorMessage,
-        title,
-        description,
       ];
 }

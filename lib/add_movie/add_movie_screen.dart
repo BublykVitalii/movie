@@ -1,13 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:movie/add_movie/cubit/add_movie_cubit.dart';
 import 'package:movie/infrastructure/theme/app_colors.dart';
 import 'package:movie/infrastructure/theme/theme_extensions.dart';
-
 import 'package:movie/my_movie/cubit/my_movie_cubit.dart';
 
 // ---Texts---
 const _kTitle = 'add movie';
+const _kErrorText = 'invalid text';
+const _kTitleWrong = 'write title movie';
+const _kOverviewWrong = 'write overview movie';
+
+// ---Parameters---
+const _kTop = 10.0;
+const _kHorizontal = 8.0;
+const _kHeight = 20.0;
+const _kTopOne = 14.0;
+const _kEight = 8.0;
 
 class AddMovieScreen extends StatefulWidget {
   static const _routeName = '/movie-create-screen';
@@ -35,11 +45,10 @@ class AddMovieScreen extends StatefulWidget {
 
 class _AddMovieScreenState extends State<AddMovieScreen> {
   String? title;
-  String? description;
+  String? overview;
 
   final _formKey = GlobalKey<FormState>();
 
-  _AddMovieScreenState();
   AddMovieCubit get addCubit => BlocProvider.of<AddMovieCubit>(context);
 
   @override
@@ -47,9 +56,9 @@ class _AddMovieScreenState extends State<AddMovieScreen> {
     return BlocListener<AddMovieCubit, AddMovieState>(
       listener: (context, state) {
         if (state.status == AddMovieStatus.success) {
-          BlocProvider.of<MyMovieCubit>(context).data(
-            title!,
-            description!,
+          BlocProvider.of<MyMovieCubit>(context).updateMovieList(
+            state.movie?.title ?? '',
+            state.movie?.overview ?? '',
           );
         }
       },
@@ -65,10 +74,9 @@ class _AddMovieScreenState extends State<AddMovieScreen> {
               key: _formKey,
               child: Center(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.only(
-                    top: 10,
-                    left: 8.0,
-                    right: 8.0,
+                  padding: const EdgeInsets.symmetric(
+                    vertical: _kTop,
+                    horizontal: _kHorizontal,
                   ),
                   child: Column(
                     children: [
@@ -77,13 +85,13 @@ class _AddMovieScreenState extends State<AddMovieScreen> {
                           title = value;
                         },
                       ),
-                      const SizedBox(height: 20),
-                      _DescriptionMovie(
+                      const SizedBox(height: _kHeight),
+                      _OverviewMovie(
                         onSaved: (value) {
-                          description = value;
+                          overview = value;
                         },
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: _kHeight),
                       FloatingActionButton(
                         backgroundColor: AppColors.darkBlueBackground,
                         child: const Icon(Icons.add),
@@ -103,7 +111,7 @@ class _AddMovieScreenState extends State<AddMovieScreen> {
   void _onPressedSave() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      addCubit.saveTitleDescription(title!, description!);
+      addCubit.saveTitleDescription(title!, overview!);
       Navigator.pop(context);
     }
   }
@@ -113,11 +121,9 @@ class _TitleMovie extends StatelessWidget {
   const _TitleMovie({
     Key? key,
     required this.onSaved,
-    this.title,
   }) : super(key: key);
 
   final ValueChanged<String?> onSaved;
-  final String? title;
 
   @override
   Widget build(BuildContext context) {
@@ -129,43 +135,26 @@ class _TitleMovie extends StatelessWidget {
         autofocus: false,
         style: context.theme.textTheme.subtitle1!
             .copyWith(color: AppColors.darkBlue),
-        decoration: InputDecoration(
-          labelText: title,
-          filled: true,
-          fillColor: Colors.white,
-          hintText: 'write title movie',
-          contentPadding:
-              const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
-          focusedBorder: OutlineInputBorder(
-            borderSide: const BorderSide(color: Colors.white),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          enabledBorder: UnderlineInputBorder(
-            borderSide: const BorderSide(color: Colors.white),
-            borderRadius: BorderRadius.circular(20),
-          ),
-        ),
+        decoration: _ExtendedInputDecoration(_kTitleWrong),
       ),
     );
   }
 
   String? _validate(String? value) {
     if (value == null || value.trim().isEmpty) {
-      return 'not text';
+      return _kErrorText;
     }
     return null;
   }
 }
 
-class _DescriptionMovie extends StatelessWidget {
-  const _DescriptionMovie({
+class _OverviewMovie extends StatelessWidget {
+  const _OverviewMovie({
     Key? key,
     required this.onSaved,
-    this.description,
   }) : super(key: key);
 
   final ValueChanged<String?> onSaved;
-  final String? description;
 
   @override
   Widget build(BuildContext context) {
@@ -177,30 +166,39 @@ class _DescriptionMovie extends StatelessWidget {
         autofocus: false,
         style: context.theme.textTheme.subtitle1!
             .copyWith(color: AppColors.darkBlue),
-        decoration: InputDecoration(
-          labelText: description,
-          filled: true,
-          fillColor: Colors.white,
-          hintText: 'write description movie',
-          contentPadding:
-              const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
-          focusedBorder: OutlineInputBorder(
-            borderSide: const BorderSide(color: Colors.white),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          enabledBorder: UnderlineInputBorder(
-            borderSide: const BorderSide(color: Colors.white),
-            borderRadius: BorderRadius.circular(20),
-          ),
-        ),
+        decoration: _ExtendedInputDecoration(_kOverviewWrong),
       ),
     );
   }
 
   String? _validate(String? value) {
     if (value == null || value.trim().isEmpty) {
-      return 'not text';
+      return _kErrorText;
     }
     return null;
   }
+}
+
+class _ExtendedInputDecoration extends InputDecoration {
+  final String text;
+  _ExtendedInputDecoration(
+    this.text,
+  ) : super(
+          filled: true,
+          fillColor: Colors.white,
+          hintText: text,
+          contentPadding: const EdgeInsets.only(
+            left: _kTopOne,
+            bottom: _kEight,
+            top: _kEight,
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: const BorderSide(color: Colors.white),
+            borderRadius: BorderRadius.circular(_kHeight),
+          ),
+          enabledBorder: UnderlineInputBorder(
+            borderSide: const BorderSide(color: Colors.white),
+            borderRadius: BorderRadius.circular(_kHeight),
+          ),
+        );
 }
