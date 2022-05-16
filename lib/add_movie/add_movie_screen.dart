@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movie/add_movie/cubit/add_movie_cubit.dart';
 import 'package:movie/infrastructure/theme/app_colors.dart';
 import 'package:movie/infrastructure/theme/theme_extensions.dart';
+import 'package:movie/movie/domain/movie.dart';
 import 'package:movie/my_movie/cubit/my_movie_cubit.dart';
 
 // ---Texts---
@@ -46,7 +47,7 @@ class AddMovieScreen extends StatefulWidget {
 class _AddMovieScreenState extends State<AddMovieScreen> {
   String? title;
   String? overview;
-
+  Movie? movie;
   final _formKey = GlobalKey<FormState>();
 
   AddMovieCubit get addCubit => BlocProvider.of<AddMovieCubit>(context);
@@ -56,10 +57,7 @@ class _AddMovieScreenState extends State<AddMovieScreen> {
     return BlocListener<AddMovieCubit, AddMovieState>(
       listener: (context, state) {
         if (state.status == AddMovieStatus.success) {
-          BlocProvider.of<MyMovieCubit>(context).updateMovieList(
-            state.movie?.title ?? '',
-            state.movie?.overview ?? '',
-          );
+          BlocProvider.of<MyMovieCubit>(context).updateMovieList(state.movie!);
         }
       },
       child: Scaffold(
@@ -111,7 +109,7 @@ class _AddMovieScreenState extends State<AddMovieScreen> {
   void _onPressedSave() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      addCubit.saveTitleDescription(title!, overview!);
+      addCubit.createMovie(title!, overview!);
       Navigator.pop(context);
     }
   }

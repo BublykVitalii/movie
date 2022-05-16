@@ -34,5 +34,6 @@ class AddMovieState extends Equatable {
   List<Object?> get props => [
         status,
         errorMessage,
+        movie,
       ];
 }

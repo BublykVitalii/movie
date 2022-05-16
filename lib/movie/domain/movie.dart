@@ -16,9 +16,9 @@ class Movie extends Equatable {
     this.isAdult,
     this.releaseDate,
     this.overview,
-    this.title,
-    this.posterPath,
-    this.id,
+    required this.title,
+    required this.posterPath,
+    required this.id,
   });
 
   @override

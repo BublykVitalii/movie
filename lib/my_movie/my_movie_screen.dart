@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:movie/add_movie/add_movie_screen.dart';
-import 'package:movie/infrastructure/movie_image.dart';
 import 'package:movie/infrastructure/theme/app_colors.dart';
 import 'package:movie/infrastructure/theme/theme_extensions.dart';
 import 'package:movie/movie/domain/movie.dart';
@@ -77,6 +76,7 @@ class _MyMovieScreenState extends State<MyMovieScreen> {
       body: BlocBuilder<MyMovieCubit, MyMovieState>(
         builder: (context, state) {
           return SafeArea(
+            bottom: false,
             child: ListView.separated(
               padding: const EdgeInsets.all(_kCardPadding),
               separatorBuilder: (BuildContext context, int index) =>
@@ -142,7 +142,7 @@ class _MovieCard extends StatelessWidget {
               image: DecorationImage(
                 fit: BoxFit.cover,
                 image: Image.asset(
-                  MovieImage.posterImage,
+                  movie.posterPath!,
                   fit: BoxFit.cover,
                 ).image,
               ),
@@ -154,7 +154,7 @@ class _MovieCard extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(_kPaddingAll),
                   child: Text(
-                    movie.title!,
+                    movie.title ?? '-',
                     style: context.theme.textTheme.subtitle1!.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
@@ -166,7 +166,7 @@ class _MovieCard extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(_kPaddingAll),
                   child: Text(
-                    movie.overview!,
+                    movie.overview ?? '--',
                     style: context.theme.textTheme.subtitle1!.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.normal,
