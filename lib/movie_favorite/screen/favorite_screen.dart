@@ -84,9 +84,9 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                   final movie = state.listMovies![index];
                   return MovieCard(
                     movie: movie,
-                    title: movie.title,
+                    title: movie.title!,
                     overview: movie.overview,
-                    posterPath: movie.posterPath,
+                    posterPath: movie.posterPath!,
                   );
                 },
               );

@@ -137,7 +137,6 @@ class _AuthScreenState extends State<AuthScreen> {
   void _onPressedSave() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-
       authCubit.sessionWithLogin(username!, password!);
     }
   }

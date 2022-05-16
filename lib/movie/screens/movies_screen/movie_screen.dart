@@ -142,8 +142,8 @@ class _MovieCard extends StatelessWidget {
           Navigator.push(context, MovieDetailsScreen.route(movie));
         },
         child: Ink.image(
-          image: movie.posterPath.isNotEmpty
-              ? NetworkImage(movie.posterPath)
+          image: movie.posterPath!.isNotEmpty
+              ? NetworkImage(movie.posterPath!)
               : Image.asset(
                   MovieImage.movieImage,
                   fit: BoxFit.cover,
@@ -180,7 +180,7 @@ class _TitleTile extends StatelessWidget {
       alignment: Alignment.center,
       height: _kHeight,
       child: Text(
-        movie.title,
+        movie.title!,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
         style: const TextStyle(

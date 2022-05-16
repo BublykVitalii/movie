@@ -62,7 +62,7 @@ class MovieDTO {
       voteAverage: voteAverage,
       isAdult: _parseAgeLimit(isAdult),
       releaseDate: releaseDate.isNotEmpty ? DateTime.parse(releaseDate) : null,
-      overview: overview,
+      overview: overview ?? '--',
       id: id,
       posterPath: posterPath != null ? _appConfig.posterUrl + posterPath! : '',
       title: title ?? '-',
