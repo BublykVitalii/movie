@@ -196,7 +196,15 @@ class _ExtendedInputDecoration extends InputDecoration {
             borderSide: const BorderSide(color: Colors.white),
             borderRadius: BorderRadius.circular(_kHeight),
           ),
-          enabledBorder: UnderlineInputBorder(
+          enabledBorder: OutlineInputBorder(
+            borderSide: const BorderSide(color: Colors.white),
+            borderRadius: BorderRadius.circular(_kHeight),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderSide: const BorderSide(color: Colors.white),
+            borderRadius: BorderRadius.circular(_kHeight),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
             borderSide: const BorderSide(color: Colors.white),
             borderRadius: BorderRadius.circular(_kHeight),
           ),
