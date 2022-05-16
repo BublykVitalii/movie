@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movie/add_movie/cubit/add_movie_cubit.dart';
 import 'package:movie/infrastructure/theme/app_colors.dart';
 import 'package:movie/infrastructure/theme/theme_extensions.dart';
-import 'package:movie/movie/domain/movie.dart';
 import 'package:movie/my_movie/cubit/my_movie_cubit.dart';
 
 // ---Texts---
@@ -47,7 +46,7 @@ class AddMovieScreen extends StatefulWidget {
 class _AddMovieScreenState extends State<AddMovieScreen> {
   String? title;
   String? overview;
-  Movie? movie;
+
   final _formKey = GlobalKey<FormState>();
 
   AddMovieCubit get addCubit => BlocProvider.of<AddMovieCubit>(context);
