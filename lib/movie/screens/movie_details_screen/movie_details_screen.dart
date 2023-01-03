@@ -88,14 +88,14 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
               _InfoRow(movie: movie),
               const SizedBox(height: _kHeight),
               _TitleText(
-                movieId: movie.id,
+                movieId: movie.id!,
                 isVisible: isVisible,
                 onShow: (value) {
                   setState(() {
                     isVisible = !value;
                   });
                 },
-                title: movie.title,
+                title: movie.title!,
               ),
               _Description(overview: movie.overview),
             ],
@@ -112,11 +112,11 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
 
         return Scaffold(
           appBar: AppBar(
-            title: Text(movie.title),
+            title: Text(movie.title!),
           ),
           body: Stack(
             children: [
-              _BackgroundImage(posterPath: movie.posterPath),
+              _BackgroundImage(posterPath: movie.posterPath!),
               Padding(
                 padding: const EdgeInsets.all(_kPadding),
                 child: content,
@@ -247,7 +247,7 @@ class _InfoRow extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        _Poster(posterPath: movie.posterPath),
+        _Poster(posterPath: movie.posterPath!),
         const SizedBox(width: _kWidth),
         _InfoText(
           voteAverage: '${movie.voteAverage}',
